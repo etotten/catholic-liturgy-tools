@@ -1,0 +1,51 @@
+name: Publish Daily Message
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 12 * * *'  # Run daily at noon UTC
+
+permissions:
+  contents: write  # Required to push commits
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install package
+        run: |
+          pip install -e .
+      
+      - name: Generate daily message
+        run: |
+          catholic-liturgy generate-message
+      
+      - name: Generate index page
+        run: |
+          catholic-liturgy generate-index
+      
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+      
+      - name: Commit and push changes
+        run: |
+          git add _posts/ index.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add daily message for $(date +%Y-%m-%d)"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
