@@ -31,6 +31,20 @@ pip install -e .
 
 ## Quick Start
 
+### 0. Configure Environment Variables (Optional)
+
+For commands that require GitHub API access (like `trigger-publish`), you can store your credentials in a `.env` file:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and add your GitHub Personal Access Token
+# GITHUB_TOKEN=ghp_your_actual_token_here
+```
+
+**Security Note**: The `.env` file is already in `.gitignore` and will never be committed to version control.
+
 ### 1. Generate a Daily Message
 
 ```bash
@@ -112,19 +126,30 @@ For the `trigger-publish` command to work, you need a GitHub Personal Access Tok
 3. Give it a descriptive name (e.g., "Catholic Liturgy Tools")
 4. Select scopes: `repo` (Full control of private repositories)
 5. Click **Generate token** and copy the token
-6. Set it as an environment variable:
+6. Configure the token using **one of these methods**:
+
+**Method 1: Using .env file (Recommended for local development)**
 
 ```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and add your token
+echo "GITHUB_TOKEN=ghp_your_token_here" > .env
+```
+
+**Method 2: Environment variable**
+
+```bash
+# Temporary (current session only)
 export GITHUB_TOKEN=ghp_your_token_here
-```
 
-For persistent storage, add it to your `~/.bashrc` or `~/.zshrc`:
-
-```bash
+# Persistent (add to ~/.bashrc or ~/.zshrc)
 echo 'export GITHUB_TOKEN=ghp_your_token_here' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-**Security Note**: Never commit your token to version control!
+**Security Note**: The `.env` file is in `.gitignore` and will never be committed. Never commit your token to version control!
 
 ## CLI Reference
 
