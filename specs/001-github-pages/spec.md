@@ -131,6 +131,7 @@ A developer can trigger the GitHub Action remotely from their local machine usin
 - GitHub Pages is enabled for the repository
 - User has Python 3.11 installed for local CLI usage
 - User has Git installed and repository cloned locally
+- Package is installed locally via `pip install -e .` from repository (not published to PyPI)
 - For GitHub Action triggering, user has a GitHub personal access token with appropriate permissions
 - Jekyll is the assumed static site generator for GitHub Pages (default for GitHub)
 - Message content is intentionally simple (date + greeting) per requirements; extensibility for richer content is out of scope for this feature

@@ -37,6 +37,7 @@ Build a Python CLI tool that generates daily markdown messages (date + "Hello Ca
 - Generated markdown must be Jekyll-compatible (YAML frontmatter + content)
 - No external databases or services (except GitHub API for P4)
 - Must handle multiple runs per day idempotently (no duplicates)
+- Local installation only (no PyPI publication - installed via `pip install -e .` from repository)
 
 **Scale/Scope**: 
 - Small scale: ~365 message files per year
