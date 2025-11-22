@@ -2,6 +2,10 @@
 
 A Python-based tool for generating and publishing daily Catholic liturgical messages to GitHub Pages.
 
+**Live Site**: https://etotten.github.io/catholic-liturgy-tools/
+
+New messages are published daily at 6 AM Central Time, or whenever commits are pushed to the `main` branch.
+
 ## Features
 
 - **Daily Message Generation**: Automatically generate markdown messages with Jekyll frontmatter
