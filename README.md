@@ -78,7 +78,20 @@ The index page includes:
 - YAML frontmatter with "Daily Messages" title
 - Links to all message files in reverse chronological order (newest first)
 
-### 3. Trigger GitHub Actions Workflow
+### 3. Check GitHub Pages Status
+
+```bash
+# Check deployment status and recent workflow runs
+catholic-liturgy check-pages
+```
+
+This displays:
+- Site URL and configuration
+- Current build status
+- Recent workflow runs with status indicators
+- Direct links to view workflow details
+
+### 4. Trigger GitHub Actions Workflow
 
 ```bash
 # Set your GitHub Personal Access Token
@@ -115,11 +128,19 @@ exclude:
 ### 3. Set Up GitHub Actions
 
 The repository includes a workflow file at `.github/workflows/publish-daily-message.yml` that:
-- Runs daily at 6 AM UTC via cron schedule
+- Runs daily at 6 AM Central Time (noon UTC) via cron schedule
 - Can be manually triggered via `workflow_dispatch`
 - Generates a new daily message
 - Updates the index page
 - Commits and pushes changes to trigger GitHub Pages deployment
+
+**Important**: The workflow uses the `github-pages` environment for deployment. If you want to deploy from branches other than `main`:
+
+1. Go to **Settings** → **Environments** → **github-pages**
+2. Under **Deployment branches**, click **Add deployment branch or tag rule**
+3. Add patterns for branches you want to allow (e.g., `001-*` for feature branches)
+
+Without this configuration, only the `main` branch will be able to deploy to GitHub Pages.
 
 ### 4. Configure GitHub Token
 
@@ -188,6 +209,29 @@ catholic-liturgy generate-index [--posts-dir DIR] [--output-file FILE]
 **Example:**
 ```bash
 catholic-liturgy generate-index --posts-dir docs/_posts --output-file docs/index.md
+```
+
+### `check-pages`
+
+Check GitHub Pages deployment status and recent workflow runs.
+
+```bash
+catholic-liturgy check-pages
+```
+
+**Requirements:**
+- `GITHUB_TOKEN` environment variable must be set
+
+**Output includes:**
+- Site URL and configuration
+- Current build status
+- Recent workflow runs with status (✅ success, ❌ failure, 🔄 in progress)
+- Links to view detailed workflow logs
+
+**Example:**
+```bash
+export GITHUB_TOKEN=ghp_your_token_here
+catholic-liturgy check-pages
 ```
 
 ### `trigger-publish`

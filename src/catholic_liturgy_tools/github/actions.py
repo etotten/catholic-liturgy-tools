@@ -79,3 +79,83 @@ def trigger_workflow(
     except requests.RequestException as e:
         print(f"Request failed: {e}")
         return False
+
+
+def check_pages_status() -> dict:
+    """
+    Check the GitHub Pages deployment status.
+    
+    Returns:
+        dict: Pages status information including:
+            - html_url: The public URL of the site
+            - status: Current build status (null if no build in progress)
+            - build_type: How pages is configured (workflow or legacy)
+            - recent_workflows: List of recent workflow runs
+        
+    Raises:
+        ValueError: If GITHUB_TOKEN environment variable is not set
+        
+    Example:
+        >>> import os
+        >>> os.environ['GITHUB_TOKEN'] = 'ghp_xxxxx'
+        >>> status = check_pages_status()
+        >>> print(status['html_url'])
+        https://etotten.github.io/catholic-liturgy-tools/
+    """
+    # Get GitHub token from environment
+    token = os.environ.get('GITHUB_TOKEN')
+    if not token:
+        raise ValueError(
+            "GITHUB_TOKEN environment variable not set. "
+            "Please set your GitHub Personal Access Token."
+        )
+    
+    # Prepare headers
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+    }
+    
+    result = {}
+    
+    try:
+        # Get Pages configuration
+        pages_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/pages"
+        pages_response = requests.get(pages_url, headers=headers)
+        
+        if pages_response.status_code == 200:
+            pages_data = pages_response.json()
+            result['html_url'] = pages_data.get('html_url')
+            result['status'] = pages_data.get('status')
+            result['build_type'] = pages_data.get('build_type')
+            result['source_branch'] = pages_data.get('source', {}).get('branch')
+            result['https_enforced'] = pages_data.get('https_enforced')
+        elif pages_response.status_code == 404:
+            result['error'] = "GitHub Pages is not enabled for this repository"
+            return result
+        else:
+            result['error'] = f"Failed to get Pages info: {pages_response.status_code}"
+            return result
+        
+        # Get recent workflow runs
+        runs_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/actions/runs"
+        runs_response = requests.get(runs_url, headers=headers, params={'per_page': 5})
+        
+        if runs_response.status_code == 200:
+            runs_data = runs_response.json()
+            result['recent_workflows'] = [
+                {
+                    'name': run['name'],
+                    'status': run['status'],
+                    'conclusion': run['conclusion'],
+                    'created_at': run['created_at'],
+                    'html_url': run['html_url']
+                }
+                for run in runs_data.get('workflow_runs', [])
+            ]
+        
+        return result
+        
+    except requests.RequestException as e:
+        return {'error': f"Request failed: {e}"}
