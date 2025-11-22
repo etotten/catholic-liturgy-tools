@@ -147,8 +147,8 @@ cython_debug/
 *~
 .DS_Store
 
-# Project-specific
-_posts/
-index.md
+## Project-specific
+#_posts/
+#index.md
 
 junk/
