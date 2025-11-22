@@ -151,5 +151,4 @@ cython_debug/
 _posts/
 index.md
 
-# SpecKit
-.specify/
+junk/

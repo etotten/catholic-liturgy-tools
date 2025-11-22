@@ -209,6 +209,62 @@ catholic-liturgy trigger-publish --branch main
 
 ## Development
 
+### Local Development Workflow
+
+#### Step 1: Activate Virtual Environment
+
+```bash
+# Create virtual environment (first time only)
+python3.11 -m venv venv
+
+# Activate it
+source venv/bin/activate  # macOS/Linux
+# or: venv\Scripts\activate  # Windows
+
+# Verify Python version
+python --version  # Should show Python 3.11.x
+```
+
+#### Step 2: Install in Editable Mode
+
+```bash
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Verify installation
+catholic-liturgy --help
+```
+
+#### Step 3: Generate Message
+
+```bash
+# Generate today's message
+catholic-liturgy generate-message
+
+# Verify file created
+ls -la _posts/
+cat _posts/$(date +%Y-%m-%d)-daily-message.md
+```
+
+#### Step 4: Generate Index
+
+```bash
+# Generate index page
+catholic-liturgy generate-index
+
+# View the index
+cat index.md
+```
+
+#### Step 5: Run Tests
+
+```bash
+# Run all tests with coverage
+pytest
+
+# Should show: 108 passed, coverage ≥90%
+```
+
 ### Running Tests
 
 The project uses pytest for testing with comprehensive coverage requirements (≥90%):
@@ -224,6 +280,24 @@ pytest tests/ --cov=catholic_liturgy_tools --cov-report=term-missing
 pytest tests/unit/          # Unit tests only
 pytest tests/integration/   # Integration tests only
 pytest tests/e2e/           # End-to-end tests only
+
+# Run specific test file
+pytest tests/unit/test_message.py
+
+# Run specific test function
+pytest tests/e2e/test_cli_generate.py::test_generate_message_creates_file
+```
+
+### Generate HTML Coverage Report
+
+```bash
+# Generate HTML report
+pytest --cov-report=html
+
+# Open in browser
+open htmlcov/index.html  # macOS
+# or: start htmlcov/index.html  # Windows
+# or: xdg-open htmlcov/index.html  # Linux
 ```
 
 ### Test Organization
@@ -231,6 +305,152 @@ pytest tests/e2e/           # End-to-end tests only
 - **Unit Tests** (`tests/unit/`): Test individual functions and modules in isolation
 - **Integration Tests** (`tests/integration/`): Test workflows across multiple modules
 - **End-to-End Tests** (`tests/e2e/`): Test CLI commands via subprocess execution
+
+### Common Development Tasks
+
+#### Clean Generated Files
+
+```bash
+# Remove all generated files
+rm -rf _posts/
+rm -f index.md
+
+# Regenerate from scratch
+catholic-liturgy generate-message
+catholic-liturgy generate-index
+```
+
+#### Test Full Workflow Locally
+
+```bash
+# 1. Generate message
+catholic-liturgy generate-message
+
+# 2. Generate index
+catholic-liturgy generate-index
+
+# 3. Verify files exist
+ls -la _posts/
+cat index.md
+
+# 4. Run tests
+pytest
+
+# 5. Check coverage
+pytest --cov-report=term-missing
+```
+
+### Troubleshooting
+
+#### Issue: `catholic-liturgy` command not found
+
+**Solution**:
+```bash
+# Ensure virtual environment is activated
+source venv/bin/activate
+
+# Reinstall package
+pip install -e ".[dev]"
+```
+
+#### Issue: Permission denied when writing files
+
+**Solution**:
+```bash
+# Check directory permissions
+ls -la
+
+# Ensure you have write permissions
+chmod u+w .
+```
+
+#### Issue: `GITHUB_TOKEN` not set
+
+**Solution**:
+```bash
+# Set environment variable
+export GITHUB_TOKEN=ghp_your_token_here
+
+# Verify it's set
+echo $GITHUB_TOKEN
+```
+
+#### Issue: GitHub Actions workflow not found
+
+**Solution**:
+- Ensure `.github/workflows/publish-daily-message.yml` exists
+- Ensure workflow file is committed and pushed to GitHub
+- Verify workflow name matches the one specified in `trigger-publish` command
+
+#### Issue: Tests failing with import errors
+
+**Solution**:
+```bash
+# Reinstall package in editable mode
+pip install -e ".[dev]"
+
+# Verify installation
+pip list | grep catholic-liturgy-tools
+```
+
+#### Issue: Coverage below 90%
+
+**Solution**:
+```bash
+# Generate detailed coverage report
+pytest --cov-report=term-missing
+
+# Identify uncovered lines (shown with `!!!!!`)
+# Add tests for those lines
+```
+
+### Jekyll Local Preview (Optional)
+
+To preview the GitHub Pages site locally before publishing:
+
+#### 1. Install Jekyll
+
+```bash
+# macOS (requires Homebrew)
+brew install ruby
+gem install bundler jekyll
+
+# Linux (Ubuntu/Debian)
+sudo apt-get install ruby-full build-essential zlib1g-dev
+gem install bundler jekyll
+
+# Windows: Use RubyInstaller (https://rubyinstaller.org/)
+```
+
+#### 2. Create Gemfile
+
+```bash
+# In repository root, create Gemfile:
+cat > Gemfile << 'EOF'
+source "https://rubygems.org"
+gem "github-pages", group: :jekyll_plugins
+EOF
+```
+
+#### 3. Install Dependencies
+
+```bash
+bundle install
+```
+
+#### 4. Serve Locally
+
+```bash
+bundle exec jekyll serve
+
+# Output: Server running at http://127.0.0.1:4000/
+```
+
+#### 5. View in Browser
+
+Open http://127.0.0.1:4000/ to see the site.
+
+**Note**: Jekyll preview is optional and not required for development. The GitHub Actions workflow handles publishing automatically.
 
 ### Project Structure
 
@@ -254,12 +474,23 @@ catholic-liturgy-tools/
 │   ├── unit/                     # Unit tests
 │   ├── integration/              # Integration tests
 │   └── e2e/                      # End-to-end tests
+├── _posts/                       # Generated daily messages
+├── index.md                      # Generated index page
 ├── _config.yml                   # Jekyll configuration
 ├── .github/
 │   └── workflows/
 │       └── publish-daily-message.yml  # GitHub Actions workflow
 └── pyproject.toml                # Package configuration
 ```
+
+### Development Best Practices
+
+1. **Always activate virtual environment** before working
+2. **Run tests before committing** (ensure nothing breaks)
+3. **Check coverage** (must be 90%+)
+4. **Write E2E tests** for CLI commands (constitutional requirement)
+5. **Keep it simple** (avoid premature abstractions)
+6. **Document as you go** (update README with new commands)
 
 ## License
 
