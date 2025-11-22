@@ -81,6 +81,83 @@ def trigger_publish_command(args):
         return 1
 
 
+def check_pages_command(args):
+    """Execute the check-pages command."""
+    from catholic_liturgy_tools.github.actions import check_pages_status, REPO_OWNER, REPO_NAME
+    from datetime import datetime
+    
+    try:
+        status = check_pages_status()
+        
+        # Check for errors
+        if 'error' in status:
+            print(f"Error: {status['error']}", file=sys.stderr)
+            return 1
+        
+        # Display Pages configuration
+        print("GitHub Pages Status")
+        print("=" * 50)
+        print(f"Site URL:       {status.get('html_url', 'N/A')}")
+        print(f"Build Type:     {status.get('build_type', 'N/A')}")
+        print(f"Source Branch:  {status.get('source_branch', 'N/A')}")
+        print(f"HTTPS Enforced: {status.get('https_enforced', 'N/A')}")
+        
+        # Display build status
+        build_status = status.get('status')
+        if build_status is None:
+            print(f"Build Status:   No build in progress")
+        else:
+            print(f"Build Status:   {build_status}")
+        
+        # Display recent workflows
+        recent_workflows = status.get('recent_workflows', [])
+        if recent_workflows:
+            print(f"\nRecent Workflow Runs:")
+            print("-" * 50)
+            for workflow in recent_workflows[:5]:
+                name = workflow['name']
+                wf_status = workflow['status']
+                conclusion = workflow['conclusion'] or 'in_progress'
+                created = workflow['created_at']
+                
+                # Parse and format timestamp
+                try:
+                    dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
+                    time_str = dt.strftime('%Y-%m-%d %H:%M:%S UTC')
+                except:
+                    time_str = created
+                
+                # Use emoji for status
+                if conclusion == 'success':
+                    icon = '✅'
+                elif conclusion == 'failure':
+                    icon = '❌'
+                elif conclusion == 'in_progress' or wf_status == 'in_progress':
+                    icon = '🔄'
+                else:
+                    icon = '⚠️'
+                
+                print(f"{icon} {name}")
+                print(f"   Status: {wf_status} / {conclusion}")
+                print(f"   Time:   {time_str}")
+                print(f"   URL:    {workflow['html_url']}")
+                print()
+        
+        print(f"View all runs: https://github.com/{REPO_OWNER}/{REPO_NAME}/actions")
+        return 0
+    
+    except ValueError as e:
+        # Missing token error
+        print(f"Error: {e}", file=sys.stderr)
+        print("\nTo set your GitHub Personal Access Token:", file=sys.stderr)
+        print("  export GITHUB_TOKEN=ghp_your_token_here", file=sys.stderr)
+        return 1
+    
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -135,6 +212,13 @@ def main():
         help="Branch to run workflow on (default: main)",
     )
     trigger_parser.set_defaults(func=trigger_publish_command)
+    
+    # check-pages subcommand
+    check_pages_parser = subparsers.add_parser(
+        "check-pages",
+        help="Check GitHub Pages deployment status",
+    )
+    check_pages_parser.set_defaults(func=check_pages_command)
     
     # Parse arguments
     args = parser.parse_args()

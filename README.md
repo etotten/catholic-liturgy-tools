@@ -78,7 +78,20 @@ The index page includes:
 - YAML frontmatter with "Daily Messages" title
 - Links to all message files in reverse chronological order (newest first)
 
-### 3. Trigger GitHub Actions Workflow
+### 3. Check GitHub Pages Status
+
+```bash
+# Check deployment status and recent workflow runs
+catholic-liturgy check-pages
+```
+
+This displays:
+- Site URL and configuration
+- Current build status
+- Recent workflow runs with status indicators
+- Direct links to view workflow details
+
+### 4. Trigger GitHub Actions Workflow
 
 ```bash
 # Set your GitHub Personal Access Token
@@ -188,6 +201,29 @@ catholic-liturgy generate-index [--posts-dir DIR] [--output-file FILE]
 **Example:**
 ```bash
 catholic-liturgy generate-index --posts-dir docs/_posts --output-file docs/index.md
+```
+
+### `check-pages`
+
+Check GitHub Pages deployment status and recent workflow runs.
+
+```bash
+catholic-liturgy check-pages
+```
+
+**Requirements:**
+- `GITHUB_TOKEN` environment variable must be set
+
+**Output includes:**
+- Site URL and configuration
+- Current build status
+- Recent workflow runs with status (✅ success, ❌ failure, 🔄 in progress)
+- Links to view detailed workflow logs
+
+**Example:**
+```bash
+export GITHUB_TOKEN=ghp_your_token_here
+catholic-liturgy check-pages
 ```
 
 ### `trigger-publish`

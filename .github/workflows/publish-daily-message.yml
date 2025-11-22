@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write  # Required to push commits
+  pages: write     # Required to deploy to Pages
+  id-token: write  # Required for Pages deployment
 
 jobs:
   generate-and-publish:
@@ -49,3 +51,25 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      
+  deploy:
+    needs: generate-and-publish
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
