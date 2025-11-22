@@ -1,0 +1,37 @@
+# Jekyll Configuration for Catholic Liturgy Tools
+
+# Site settings
+title: "Catholic Liturgy Tools"
+description: "Daily messages and Catholic liturgy resources"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site
+
+# Build settings
+theme: minima
+markdown: kramdown
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:year/:month/:day/:title/
+
+# Exclude from processing
+exclude:
+  - src/
+  - tests/
+  - .git/
+  - .github/
+  - .specify/
+  - .vscode/
+  - venv/
+  - __pycache__/
+  - "*.py"
+  - pyproject.toml
+  - LICENSE
+  - README.md
+  - specs/
+
+# Include hidden files if needed
+include:
+  - _posts
