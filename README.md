@@ -128,11 +128,19 @@ exclude:
 ### 3. Set Up GitHub Actions
 
 The repository includes a workflow file at `.github/workflows/publish-daily-message.yml` that:
-- Runs daily at 6 AM UTC via cron schedule
+- Runs daily at 6 AM Central Time (noon UTC) via cron schedule
 - Can be manually triggered via `workflow_dispatch`
 - Generates a new daily message
 - Updates the index page
 - Commits and pushes changes to trigger GitHub Pages deployment
+
+**Important**: The workflow uses the `github-pages` environment for deployment. If you want to deploy from branches other than `main`:
+
+1. Go to **Settings** → **Environments** → **github-pages**
+2. Under **Deployment branches**, click **Add deployment branch or tag rule**
+3. Add patterns for branches you want to allow (e.g., `001-*` for feature branches)
+
+Without this configuration, only the `main` branch will be able to deploy to GitHub Pages.
 
 ### 4. Configure GitHub Token
 
