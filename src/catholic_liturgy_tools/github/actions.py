@@ -4,6 +4,8 @@ import os
 import requests
 from typing import Optional
 
+from ..constants import DEFAULT_WORKFLOW_FILE
+
 
 # Repository configuration
 REPO_OWNER = "etotten"
@@ -11,7 +13,7 @@ REPO_NAME = "catholic-liturgy-tools"
 
 
 def trigger_workflow(
-    workflow_file: str = "publish-content.yml",
+    workflow_file: str = DEFAULT_WORKFLOW_FILE,
     branch: str = "main"
 ) -> bool:
     """

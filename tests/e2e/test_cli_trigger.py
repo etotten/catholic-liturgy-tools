@@ -49,6 +49,37 @@ class TestTriggerPublishCLI:
         assert result.returncode == 0
         assert "trigger-publish" in result.stdout
     
+    def test_trigger_publish_without_explicit_workflow_arg(self):
+        """Test that trigger-publish command accepts no explicit workflow argument."""
+        # Note: This E2E test verifies the CLI can be invoked without explicit workflow argument
+        # It will fail auth because we're using a fake token, but that's OK - we're testing
+        # that the default workflow name is used, not that auth succeeds
+        
+        # Set a fake GITHUB_TOKEN for the test
+        env = os.environ.copy()
+        env['GITHUB_TOKEN'] = 'ghp_fake_token_for_testing_12345'
+        env['SKIP_DOTENV_LOAD'] = '1'
+        
+        # Run CLI without --workflow-file argument
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", "trigger-publish"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        
+        # Should fail with auth error (expected with fake token)
+        # But the important thing is it ran with the default workflow
+        assert result.returncode == 1
+        
+        # Should show authentication error (proves it tried to call API with default workflow)
+        assert "Authentication error" in result.stdout or "Bad credentials" in result.stdout
+        
+        # Most importantly: no "404" or "Workflow does not exist" error
+        # which would indicate wrong workflow name was used
+        assert "404" not in result.stdout
+        assert "Workflow does not" not in result.stdout
+    
     def test_trigger_publish_behavior_tested_in_unit_tests(self):
         """Test that trigger-publish behavior is thoroughly tested in unit tests."""
         # Note: Subprocess-based E2E tests cannot mock external API calls
