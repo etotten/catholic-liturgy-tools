@@ -12,9 +12,9 @@
 The Site Content Restructuring feature has been successfully implemented, transforming the project from a Jekyll-based Markdown site to a modern HTML site deployed via GitHub Pages Actions. The feature reorganizes all generated content into a clean `_site/` directory structure and replaces Markdown with HTML for better browser compatibility and styling control.
 
 **Key Metrics**:
-- **Tasks Completed**: 53/53 (100%)
-- **Test Coverage**: 92.52% (exceeds 90% requirement)
-- **Total Tests**: 294 tests (all passing)
+- **Tasks Completed**: 74/74 (100%) - includes Phase 7 enhancement
+- **Test Coverage**: 92.56% (exceeds 90% requirement)
+- **Total Tests**: 299 tests (all passing, 1 skipped)
 - **Development Approach**: TDD (tests written before implementation)
 - **Deployment Method**: GitHub Actions artifact-based (no gh-pages branch)
 - **Live Site**: https://etotten.github.io/catholic-liturgy-tools/
@@ -174,6 +174,41 @@ All tests followed TDD approach:
 **Tests**: 3 test tasks, 4 implementation tasks  
 **Outcome**: All links use relative paths, reverse chronological sorting
 
+### Phase 7: Date Parameter Enhancement ✅
+**Status**: Complete (added during implementation, not in original spec)  
+**Tasks**: 9 tasks (5 implementation + 2 tests + 2 validation)  
+**Purpose**: Enable regeneration of specific historical dates via CLI workflow triggers  
+**Outcome**: All CLI commands support `--date` parameter for content regeneration
+
+**What Was Added**:
+- GitHub Actions workflow accepts optional `date` input (YYYY-MM-DD format)
+- `generate-message` command accepts `--date` parameter
+- `trigger-publish` command accepts `--date` parameter to pass to workflow
+- All parameters default to today's date if not specified
+- Backward compatible: existing usage without `--date` still works
+
+**Testing**:
+- 3 E2E tests for `generate-message --date`
+- 2 E2E tests for `trigger-publish --date`
+- 6 unit tests updated to handle new parameter
+- 1 integration test fixed
+- All 299 tests passing with 92.56% coverage
+
+**Commits**:
+- `d7717d5`: feat: add date input parameter to workflow
+- `dac8ec4`: feat: add --date to trigger-publish command
+- `5a8f510`: feat: add --date to generate-message command
+- `0aa8f88`: test: comprehensive tests for --date parameter
+
+**Use Case**: Regenerate content for specific dates (e.g., fixing errors, updating formatting)
+```bash
+# Regenerate Christmas Day content
+catholic-liturgy trigger-publish --date 2025-12-25
+
+# Generate message for specific date locally
+catholic-liturgy generate-message --date 2025-11-20
+```
+
 ---
 
 ## Deployment Verification
@@ -204,6 +239,10 @@ All tests followed TDD approach:
 4. **5efffee**: Migration - Moved content, deleted old structure
 5. **96a561b**: Workflow permissions fix
 6. **aa0714a**: GitHub Pages Actions deployment
+7. **d7717d5**: Phase 7 - Add date input to workflow
+8. **dac8ec4**: Phase 7 - Add --date to trigger-publish
+9. **5a8f510**: Phase 7 - Add --date to generate-message
+10. **0aa8f88**: Phase 7 - Tests and documentation
 
 ### Branches
 - Feature branch: `003-site-content-restructure`
@@ -232,6 +271,9 @@ All tests followed TDD approach:
 
 4. **Challenge**: No gh-pages branch visible
    - **Solution**: This is expected and correct with artifact-based deployment
+
+5. **Challenge**: Need to regenerate historical dates discovered during implementation
+   - **Solution**: Added Phase 7 enhancement for `--date` parameter support
 
 ---
 
@@ -294,7 +336,7 @@ catholic-liturgy generate-index     # → _site/index.html
 
 ## Conclusion
 
-Feature 003-site-content-restructure has been successfully completed with all 53 tasks finished, 92.52% test coverage achieved, and the live site verified at https://etotten.github.io/catholic-liturgy-tools/.
+Feature 003-site-content-restructure has been successfully completed with all 74 tasks finished (including Phase 7 enhancement), 92.56% test coverage achieved, 299 tests passing, and the live site verified at https://etotten.github.io/catholic-liturgy-tools/.
 
 The new structure provides:
 - ✅ Cleaner organization with `_site/` directory
