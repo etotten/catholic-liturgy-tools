@@ -1,12 +1,15 @@
 """Command-line interface for Catholic Liturgy Tools."""
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if it exists
-load_dotenv()
+# Skip loading if SKIP_DOTENV_LOAD is set (for testing)
+if not os.environ.get('SKIP_DOTENV_LOAD'):
+    load_dotenv()
 
 
 def generate_message_command(args):
