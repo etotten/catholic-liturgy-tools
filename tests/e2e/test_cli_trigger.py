@@ -10,13 +10,21 @@ from unittest.mock import patch, Mock
 class TestTriggerPublishCLI:
     """E2E tests for the trigger-publish CLI command."""
     
-    @patch.dict(os.environ, {}, clear=True)
     def test_trigger_publish_command_missing_token(self):
         """Test that trigger-publish fails gracefully when GITHUB_TOKEN is missing."""
+        # Create environment without GITHUB_TOKEN but with SKIP_DOTENV_LOAD
+        # to prevent the subprocess from loading .env file
+        env = {
+            'SKIP_DOTENV_LOAD': '1',
+            'PATH': os.environ.get('PATH', ''),
+            'HOME': os.environ.get('HOME', ''),
+        }
+        
         result = subprocess.run(
             [sys.executable, "-m", "catholic_liturgy_tools.cli", "trigger-publish"],
             capture_output=True,
             text=True,
+            env=env,
         )
         
         # Should fail with clear error message
