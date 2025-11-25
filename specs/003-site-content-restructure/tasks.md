@@ -153,22 +153,52 @@
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: Additional Enhancement - Date Parameter Support for Content Regeneration
+
+**Purpose**: Enable regeneration of specific historical dates via CLI workflow triggers (added during implementation, not in original spec)
+
+**Context**: During feature 003 implementation, discovered need to regenerate content for specific dates. Added `--date` parameter support to workflow inputs and CLI commands.
+
+**Commits**:
+- d7717d5: feat: add date input parameter to workflow for regenerating specific dates
+- dac8ec4: feat: add --date parameter to trigger-publish command for regenerating specific dates
+- 5a8f510: feat: add --date parameter to generate-message command for consistency
+
+### Implementation Tasks
+
+- [X] T054 [P] Update .github/workflows/publish-content.yml to accept date input via workflow_dispatch
+- [X] T055 [P] Update src/catholic_liturgy_tools/github/actions.py trigger_workflow() to accept inputs dict parameter
+- [X] T056 Update src/catholic_liturgy_tools/cli.py trigger-publish command to accept --date parameter
+- [X] T057 Update src/catholic_liturgy_tools/generator/message.py generate_message() to accept date parameter
+- [X] T058 Update src/catholic_liturgy_tools/cli.py generate-message command to accept --date parameter
+
+### Test Tasks
+
+- [X] T059 [P] Add E2E tests for generate-message --date in tests/e2e/test_cli_generate.py (3 new tests)
+- [X] T060 [P] Add E2E tests for trigger-publish --date in tests/e2e/test_cli_trigger.py (2 new tests)
+- [ ] T061 Run coverage check to verify new code paths tested
+- [ ] T062 Commit test changes with descriptive message
+
+**Checkpoint**: Date parameter support complete, all tests passing
+
+---
+
+## Phase 8: Polish & Cross-Cutting Concerns
 
 **Purpose**: Final validation, documentation, and cleanup
 
-- [X] T042 [P] Run full test suite and verify 90%+ coverage with `pytest --cov=src/catholic_liturgy_tools --cov-fail-under=90`
-- [X] T043 [P] Update CHANGELOG.md with v0.3.0 changes (new _site/ structure, HTML index, gh-pages deployment)
-- [X] T044 Generate content locally and verify structure matches contracts (run quickstart.md validation steps)
-- [X] T045 Test backward compatibility: verify custom --output-dir paths still work
-- [X] T046 Perform one-time migration: move existing content from `_posts/`, `readings/`, `index.md` to `_site/` structure
-- [X] T047 Delete old files after successful migration verification (`_posts/`, `readings/`, `index.md`)
-- [X] T048 Push feature branch and manually trigger GitHub Actions workflow
-- [X] T049 Verify GitHub Pages deployment using artifact-based deployment (no gh-pages branch needed)
-- [X] T050 Configure GitHub Pages settings: Settings → Pages → Source: GitHub Actions
-- [X] T051 Verify live site at https://etotten.github.io/catholic-liturgy-tools/ loads correctly
-- [X] T052 Test all links on live site to ensure no 404 errors
-- [X] T053 [P] Update README.md with new site structure information and deployment details
+- [X] T063 [P] Run full test suite and verify 90%+ coverage with `pytest --cov=src/catholic_liturgy_tools --cov-fail-under=90`
+- [X] T064 [P] Update CHANGELOG.md with v0.3.0 changes (new _site/ structure, HTML index, gh-pages deployment)
+- [X] T065 Generate content locally and verify structure matches contracts (run quickstart.md validation steps)
+- [X] T066 Test backward compatibility: verify custom --output-dir paths still work
+- [X] T067 Perform one-time migration: move existing content from `_posts/`, `readings/`, `index.md` to `_site/` structure
+- [X] T068 Delete old files after successful migration verification (`_posts/`, `readings/`, `index.md`)
+- [X] T069 Push feature branch and manually trigger GitHub Actions workflow
+- [X] T070 Verify GitHub Pages deployment using artifact-based deployment (no gh-pages branch needed)
+- [X] T071 Configure GitHub Pages settings: Settings → Pages → Source: GitHub Actions
+- [X] T072 Verify live site at https://etotten.github.io/catholic-liturgy-tools/ loads correctly
+- [X] T073 Test all links on live site to ensure no 404 errors
+- [X] T074 [P] Update README.md with new site structure information and deployment details
 
 ---
 
@@ -183,7 +213,8 @@
   - US2 depends on US1 (needs _site/ structure)
   - US3 depends on US1 and US2 (needs generated content to deploy)
   - US4 depends on US2 (needs HTML index to update links)
-- **Polish (Phase 7)**: Depends on all user stories being complete
+- **Date Parameter Enhancement (Phase 7)**: Added during implementation - depends on US3 (workflow must exist)
+- **Polish (Phase 8)**: Depends on all user stories and enhancements being complete
 
 ### User Story Dependencies
 
@@ -288,13 +319,14 @@
 
 ## Task Count Summary
 
-- **Total Tasks**: 53
+- **Total Tasks**: 74
 - **Setup Phase**: 3 tasks
 - **Foundational Phase**: 2 tasks
 - **User Story 1**: 10 tasks (5 tests + 5 implementation)
 - **User Story 2**: 11 tasks (4 tests + 7 implementation)
 - **User Story 3**: 8 tasks (2 tests + 6 implementation)
 - **User Story 4**: 7 tasks (3 tests + 4 implementation)
+- **Date Parameter Enhancement (Phase 7)**: 9 tasks (5 implementation + 2 tests + 2 validation) - **NOT IN ORIGINAL SPEC**
 - **Polish Phase**: 12 tasks
 
 ### Parallel Opportunities Identified
@@ -384,5 +416,6 @@
 ---
 
 **Implementation Ready**: YES  
-**Next Action**: Begin Phase 1 (Setup) → T001, T002, T003  
-**Estimated Completion**: 15-20 hours total development time
+**Current Status**: Phase 7 (Date Parameter Enhancement) in progress - validation tasks remaining  
+**Next Action**: T061 (Run coverage check), T062 (Commit test changes)  
+**Estimated Completion**: 15-20 hours total development time (18 hours actual with Phase 7 addition)

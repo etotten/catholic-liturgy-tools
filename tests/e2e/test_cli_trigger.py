@@ -80,6 +80,42 @@ class TestTriggerPublishCLI:
         assert "404" not in result.stdout
         assert "Workflow does not" not in result.stdout
     
+    def test_trigger_publish_help_shows_date_option(self):
+        """Test that trigger-publish help shows --date option."""
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", "trigger-publish", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "--date" in result.stdout
+        assert "YYYY-MM-DD" in result.stdout
+    
+    def test_trigger_publish_with_date_parameter(self):
+        """Test that trigger-publish accepts --date parameter."""
+        # Set a fake GITHUB_TOKEN for the test
+        env = os.environ.copy()
+        env['GITHUB_TOKEN'] = 'ghp_fake_token_for_testing_12345'
+        env['SKIP_DOTENV_LOAD'] = '1'
+        
+        # Run CLI with --date argument
+        result = subprocess.run(
+            [
+                sys.executable, "-m", "catholic_liturgy_tools.cli", "trigger-publish",
+                "--date", "2025-12-25"
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        
+        # Should fail with auth error (expected with fake token)
+        assert result.returncode == 1
+        
+        # Should show authentication error (proves it accepted --date and tried to call API)
+        assert "Authentication error" in result.stdout or "Bad credentials" in result.stdout
+    
     def test_trigger_publish_behavior_tested_in_unit_tests(self):
         """Test that trigger-publish behavior is thoroughly tested in unit tests."""
         # Note: Subprocess-based E2E tests cannot mock external API calls
