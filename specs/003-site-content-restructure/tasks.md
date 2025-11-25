@@ -163,12 +163,12 @@
 - [X] T045 Test backward compatibility: verify custom --output-dir paths still work
 - [X] T046 Perform one-time migration: move existing content from `_posts/`, `readings/`, `index.md` to `_site/` structure
 - [X] T047 Delete old files after successful migration verification (`_posts/`, `readings/`, `index.md`)
-- [ ] T048 Push feature branch and manually trigger GitHub Actions workflow
-- [ ] T049 Verify gh-pages branch created with correct content (only _site/ contents at root)
-- [ ] T050 Configure GitHub Pages settings: Settings → Pages → Deploy from branch → gh-pages → / (root)
-- [ ] T051 Verify live site at https://etotten.github.io/catholic-liturgy-tools/ loads correctly
-- [ ] T052 Test all links on live site to ensure no 404 errors
-- [ ] T053 [P] Update README.md with new site structure information and deployment details
+- [X] T048 Push feature branch and manually trigger GitHub Actions workflow
+- [X] T049 Verify GitHub Pages deployment using artifact-based deployment (no gh-pages branch needed)
+- [X] T050 Configure GitHub Pages settings: Settings → Pages → Source: GitHub Actions
+- [X] T051 Verify live site at https://etotten.github.io/catholic-liturgy-tools/ loads correctly
+- [X] T052 Test all links on live site to ensure no 404 errors
+- [X] T053 [P] Update README.md with new site structure information and deployment details
 
 ---
 
