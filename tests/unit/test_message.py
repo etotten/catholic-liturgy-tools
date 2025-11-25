@@ -68,11 +68,12 @@ class TestGetMessageFilePath:
         
         assert filepath.name == "2025-11-22-daily-message.md"
     
-    def test_default_output_directory_is_posts(self):
-        """Test that default output directory is _posts."""
+    def test_default_output_directory_is_site_messages(self):
+        """Test that default output directory is _site/messages."""
         filepath = get_message_file_path("2025-11-22")
         
-        assert filepath.parent.name == "_posts"
+        assert filepath.parent.name == "messages"
+        assert filepath.parent.parent.name == "_site"
     
     def test_custom_output_directory(self):
         """Test that custom output directory can be specified."""

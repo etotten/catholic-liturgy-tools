@@ -33,13 +33,13 @@ Hello Catholic World
     return content
 
 
-def get_message_file_path(date: str, output_dir: str = "_posts") -> Path:
+def get_message_file_path(date: str, output_dir: str = "_site/messages") -> Path:
     """
     Get the file path for a daily message.
     
     Args:
         date: Date in YYYY-MM-DD format
-        output_dir: Output directory (default: _posts)
+        output_dir: Output directory (default: _site/messages)
         
     Returns:
         Path: File path for the message
@@ -53,7 +53,7 @@ def get_message_file_path(date: str, output_dir: str = "_posts") -> Path:
     return Path(output_dir) / filename
 
 
-def generate_message(output_dir: str = "_posts") -> Path:
+def generate_message(output_dir: str = "_site/messages") -> Path:
     """
     Generate a daily message for today's date.
     
@@ -62,7 +62,7 @@ def generate_message(output_dir: str = "_posts") -> Path:
     output directory.
     
     Args:
-        output_dir: Output directory (default: _posts)
+        output_dir: Output directory (default: _site/messages)
         
     Returns:
         Path: Path to the generated message file

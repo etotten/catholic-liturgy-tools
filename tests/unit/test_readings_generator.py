@@ -348,13 +348,14 @@ class TestGenerateReadingsPage:
         assert mtime2 >= mtime1  # File was modified
     
     def test_default_output_dir(self, sample_reading, tmp_path, monkeypatch):
-        """Verify default output directory is 'readings'."""
+        """Verify default output directory is '_site/readings'."""
         # Change to temp directory for this test
         monkeypatch.chdir(tmp_path)
         
         file_path = generate_readings_page(sample_reading)
         
         assert file_path.parent.name == "readings"
+        assert file_path.parent.parent.name == "_site"
         assert file_path.exists()
     
     def test_returns_path_object(self, sample_reading, tmp_path):

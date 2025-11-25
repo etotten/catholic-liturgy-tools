@@ -3,5 +3,5 @@
 from catholic_liturgy_tools.cli import main
 import sys
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())

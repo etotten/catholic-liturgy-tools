@@ -152,3 +152,6 @@ cython_debug/
 #index.md
 
 junk/
+
+# Generated site content (locally)
+_site/

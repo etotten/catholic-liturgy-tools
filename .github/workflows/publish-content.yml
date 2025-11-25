@@ -1,18 +1,30 @@
 name: Publish Daily Content
 
 on:
-  workflow_dispatch:    # Allow manual trigger
+  workflow_dispatch:    # Allow manual trigger from any branch
+  push:
+    branches:
+      - main
+      - '003-*'         # Allow deployment from feature branches for testing
   schedule:
     - cron: '0 12 * * *'  # Run daily at 6 AM Central Time (noon UTC)
 
 permissions:
-  contents: write  # Required to push commits
-  pages: write     # Required to deploy to Pages
-  id-token: write  # Required for Pages deployment
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  generate-and-publish:
+  generate-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Checkout repository
@@ -39,41 +51,14 @@ jobs:
         run: |
           catholic-liturgy generate-index
       
-      - name: Configure Git
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
       
-      - name: Commit and push changes
-        run: |
-          git add _posts/ readings/ index.md
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Add daily content for $(date +%Y-%m-%d)"
-            git push
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: './_site'
       
-  deploy:
-    needs: generate-and-publish
-    runs-on: ubuntu-latest
-    
-    permissions:
-      pages: write
-      id-token: write
-    
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -12,7 +12,7 @@ REPO_OWNER = "etotten"
 REPO_NAME = "catholic-liturgy-tools"
 
 
-def trigger_workflow(
+def trigger_workflow(  # pragma: no cover
     workflow_file: str = DEFAULT_WORKFLOW_FILE,
     branch: str = "main"
 ) -> bool:
@@ -83,7 +83,7 @@ def trigger_workflow(
         return False
 
 
-def check_pages_status() -> dict:
+def check_pages_status() -> dict:  # pragma: no cover
     """
     Check the GitHub Pages deployment status.
     

@@ -11,7 +11,7 @@ class TestMessageWorkflow:
     
     def test_message_generation_creates_file_with_correct_structure(self, temp_dir):
         """Test that message generation creates a properly structured file."""
-        output_dir = str(temp_dir / "_posts")
+        output_dir = str(temp_dir / "_site" / "messages")
         
         # Generate message
         result_path = generate_message(output_dir=output_dir)
@@ -58,7 +58,7 @@ class TestMessageWorkflow:
     
     def test_message_overwrite_idempotency(self, temp_dir):
         """Test that running generation multiple times is idempotent."""
-        output_dir = str(temp_dir / "_posts")
+        output_dir = str(temp_dir / "_site" / "messages")
         
         # Generate first time
         result1 = generate_message(output_dir=output_dir)
@@ -84,7 +84,7 @@ class TestMessageWorkflow:
     
     def test_multiple_days_create_separate_files(self, temp_dir):
         """Test that messages for different days create separate files (simulation)."""
-        output_dir = str(temp_dir / "_posts")
+        output_dir = str(temp_dir / "_site" / "messages")
         
         # Generate today's message
         result_today = generate_message(output_dir=output_dir)
