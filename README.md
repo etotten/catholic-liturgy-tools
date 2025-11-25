@@ -221,15 +221,26 @@ source ~/.zshrc
 Generate a daily message markdown file.
 
 ```bash
-catholic-liturgy generate-message [--output-dir DIR]
+catholic-liturgy generate-message [--date DATE] [--output-dir DIR]
 ```
 
 **Options:**
+- `--date`, `-d`: Date to generate message for in YYYY-MM-DD format (default: today)
 - `--output-dir`, `-o`: Directory for output (default: `_posts`)
 
-**Example:**
+**Examples:**
 ```bash
+# Generate today's message
+catholic-liturgy generate-message
+
+# Generate message for a specific date
+catholic-liturgy generate-message --date 2025-12-25
+
+# Custom output directory
 catholic-liturgy generate-message --output-dir docs/_posts
+
+# Both date and custom directory
+catholic-liturgy generate-message -d 2025-12-25 -o custom/posts
 ```
 
 ---
@@ -342,20 +353,39 @@ catholic-liturgy check-pages
 Trigger a GitHub Actions workflow to publish content.
 
 ```bash
-catholic-liturgy trigger-publish [--workflow-file FILE] [--branch BRANCH]
+catholic-liturgy trigger-publish [--date DATE] [--workflow-file FILE] [--branch BRANCH]
 ```
 
 **Options:**
-- `--workflow-file`: Workflow filename (default: `publish-daily-message.yml`)
+- `--date`, `-d`: Date to generate content for in YYYY-MM-DD format (default: today)
+- `--workflow-file`: Workflow filename (default: `publish-content.yml`)
 - `--branch`: Branch to run workflow on (default: `main`)
 
 **Requirements:**
 - `GITHUB_TOKEN` environment variable must be set
 
-**Example:**
+**Examples:**
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here
-catholic-liturgy trigger-publish --branch main
+
+# Trigger today's content generation
+catholic-liturgy trigger-publish
+
+# Regenerate content for a specific date
+catholic-liturgy trigger-publish --date 2025-12-25
+
+# Trigger on a specific branch with custom date
+catholic-liturgy trigger-publish --date 2025-11-20 --branch 003-site-content-restructure-finish
+
+# Short options
+catholic-liturgy trigger-publish -d 2025-12-01
+```
+
+**Use Case - Regenerating Historical Content:**
+If you need to fix or regenerate content for a specific date (e.g., correcting an error or updating formatting), use the `--date` parameter:
+```bash
+# Regenerate Christmas Day content
+catholic-liturgy trigger-publish --date 2025-12-25
 ```
 
 ## Development
