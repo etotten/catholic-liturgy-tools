@@ -176,7 +176,7 @@ def generate_readings_html(reading: DailyReading) -> str:
 
 def generate_readings_page(
     reading: DailyReading,
-    output_dir: str = "readings"
+    output_dir: str = "_site/readings"
 ) -> Path:
     """Generate and save HTML page for a daily reading.
     
@@ -189,7 +189,7 @@ def generate_readings_page(
     
     Args:
         reading: DailyReading object containing all reading data
-        output_dir: Directory path where HTML file will be saved (default: "readings")
+        output_dir: Directory path where HTML file will be saved (default: "_site/readings")
         
     Returns:
         Path object pointing to the created HTML file

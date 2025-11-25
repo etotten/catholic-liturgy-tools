@@ -14,12 +14,12 @@ class TestGenerateMessageCommand:
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_calls_generator(self, mock_generate):
         """Test that command calls the generate_message function."""
-        mock_args = Mock(output_dir='_posts')
-        mock_generate.return_value = Path('_posts/2025-01-15-daily-message.md')
+        mock_args = Mock(output_dir='_site/messages')
+        mock_generate.return_value = Path('_site/messages/2025-01-15-daily-message.md')
         
         result = cli.generate_message_command(mock_args)
         
-        mock_generate.assert_called_once_with(output_dir='_posts')
+        mock_generate.assert_called_once_with(output_dir='_site/messages')
         assert result == 0
     
     @patch('catholic_liturgy_tools.generator.message.generate_message')
@@ -37,8 +37,8 @@ class TestGenerateMessageCommand:
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_prints_success_message(self, mock_generate, mock_print):
         """Test that command prints success message."""
-        mock_args = Mock(output_dir='_posts')
-        output_path = Path('_posts/2025-01-15-daily-message.md')
+        mock_args = Mock(output_dir='_site/messages')
+        output_path = Path('_site/messages/2025-01-15-daily-message.md')
         mock_generate.return_value = output_path
         
         cli.generate_message_command(mock_args)
@@ -52,7 +52,7 @@ class TestGenerateMessageCommand:
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_handles_exception(self, mock_generate, mock_print):
         """Test command handles exceptions and returns error code."""
-        mock_args = Mock(output_dir='_posts')
+        mock_args = Mock(output_dir='_site/messages')
         mock_generate.side_effect = Exception("Test error")
         
         result = cli.generate_message_command(mock_args)
@@ -73,14 +73,14 @@ class TestGenerateIndexCommand:
     @patch('catholic_liturgy_tools.generator.index.generate_index')
     def test_generate_index_command_calls_generator(self, mock_generate, mock_scan_messages, mock_scan_readings):
         """Test that command calls the generate_index function."""
-        mock_args = Mock(posts_dir='_posts', output_file='index.md', readings_dir='readings')
-        mock_generate.return_value = Path('index.md')
-        mock_scan_messages.return_value = [Path('_posts/2025-11-22-daily-message.md')]
+        mock_args = Mock(posts_dir='_site/messages', output_file='_site/index.html', readings_dir='_site/readings')
+        mock_generate.return_value = Path('_site/index.html')
+        mock_scan_messages.return_value = [Path('_site/messages/2025-11-22-daily-message.md')]
         mock_scan_readings.return_value = []
         
         result = cli.generate_index_command(mock_args)
         
-        mock_generate.assert_called_once_with(posts_dir='_posts', output_file='index.md', readings_dir='readings')
+        mock_generate.assert_called_once_with(posts_dir='_site/messages', output_file='_site/index.html', readings_dir='_site/readings')
         assert result == 0
     
     @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
@@ -88,14 +88,14 @@ class TestGenerateIndexCommand:
     @patch('catholic_liturgy_tools.generator.index.generate_index')
     def test_generate_index_command_with_custom_posts_dir(self, mock_generate, mock_scan_messages, mock_scan_readings):
         """Test command with custom posts directory."""
-        mock_args = Mock(posts_dir='custom/_posts', output_file='index.md', readings_dir='readings')
-        mock_generate.return_value = Path('index.md')
+        mock_args = Mock(posts_dir='custom/_posts', output_file='custom/index.html', readings_dir='custom/readings')
+        mock_generate.return_value = Path('custom/index.html')
         mock_scan_messages.return_value = []
         mock_scan_readings.return_value = []
         
         result = cli.generate_index_command(mock_args)
         
-        mock_generate.assert_called_once_with(posts_dir='custom/_posts', output_file='index.md', readings_dir='readings')
+        mock_generate.assert_called_once_with(posts_dir='custom/_posts', output_file='custom/index.html', readings_dir='custom/readings')
         assert result == 0
     
     @patch('catholic_liturgy_tools.generator.index.scan_readings_files')

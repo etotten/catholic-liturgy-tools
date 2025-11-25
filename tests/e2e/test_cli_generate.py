@@ -45,7 +45,7 @@ class TestGenerateMessageCLI:
         
         # Verify file was created
         today = date.today().isoformat()
-        expected_file = temp_dir / "_posts" / f"{today}-daily-message.md"
+        expected_file = temp_dir / "_site" / "messages" / f"{today}-daily-message.md"
         
         assert expected_file.exists()
         
@@ -77,7 +77,7 @@ class TestGenerateMessageCLI:
         
         # Verify file still exists and is valid
         today = date.today().isoformat()
-        expected_file = temp_dir / "_posts" / f"{today}-daily-message.md"
+        expected_file = temp_dir / "_site" / "messages" / f"{today}-daily-message.md"
         
         assert expected_file.exists()
         content = expected_file.read_text()

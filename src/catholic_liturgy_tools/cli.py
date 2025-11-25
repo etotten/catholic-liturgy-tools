@@ -269,8 +269,8 @@ def main():
     )
     generate_parser.add_argument(
         "--output-dir",
-        default="_posts",
-        help="Output directory for message files (default: _posts)",
+        default="_site/messages",
+        help="Output directory for message files (default: _site/messages)",
     )
     generate_parser.set_defaults(func=generate_message_command)
     
@@ -288,8 +288,8 @@ def main():
     readings_parser.add_argument(
         "--output-dir",
         "-o",
-        default="readings",
-        help="Output directory for HTML files (default: readings)",
+        default="_site/readings",
+        help="Output directory for HTML files (default: _site/readings)",
     )
     readings_parser.set_defaults(func=generate_readings_command)
     
@@ -301,20 +301,20 @@ def main():
     index_parser.add_argument(
         "--posts-dir",
         "-p",
-        default="_posts",
-        help="Directory containing message files (default: _posts)",
+        default="_site/messages",
+        help="Directory containing message files (default: _site/messages)",
     )
     index_parser.add_argument(
         "--readings-dir",
         "-r",
-        default="readings",
-        help="Directory containing readings HTML files (default: readings)",
+        default="_site/readings",
+        help="Directory containing readings HTML files (default: _site/readings)",
     )
     index_parser.add_argument(
         "--output-file",
         "-o",
-        default="index.md",
-        help="Output file for index (default: index.md)",
+        default="_site/index.html",
+        help="Output file for index (default: _site/index.html)",
     )
     index_parser.set_defaults(func=generate_index_command)
     
