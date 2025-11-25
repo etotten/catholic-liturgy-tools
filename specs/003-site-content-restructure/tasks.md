@@ -158,11 +158,11 @@
 **Purpose**: Final validation, documentation, and cleanup
 
 - [X] T042 [P] Run full test suite and verify 90%+ coverage with `pytest --cov=src/catholic_liturgy_tools --cov-fail-under=90`
-- [ ] T043 [P] Update CHANGELOG.md with v0.3.0 changes (new _site/ structure, HTML index, gh-pages deployment)
-- [ ] T044 Generate content locally and verify structure matches contracts (run quickstart.md validation steps)
-- [ ] T045 Test backward compatibility: verify custom --output-dir paths still work
-- [ ] T046 Perform one-time migration: move existing content from `_posts/`, `readings/`, `index.md` to `_site/` structure
-- [ ] T047 Delete old files after successful migration verification (`_posts/`, `readings/`, `index.md`)
+- [X] T043 [P] Update CHANGELOG.md with v0.3.0 changes (new _site/ structure, HTML index, gh-pages deployment)
+- [X] T044 Generate content locally and verify structure matches contracts (run quickstart.md validation steps)
+- [X] T045 Test backward compatibility: verify custom --output-dir paths still work
+- [X] T046 Perform one-time migration: move existing content from `_posts/`, `readings/`, `index.md` to `_site/` structure
+- [X] T047 Delete old files after successful migration verification (`_posts/`, `readings/`, `index.md`)
 - [ ] T048 Push feature branch and manually trigger GitHub Actions workflow
 - [ ] T049 Verify gh-pages branch created with correct content (only _site/ contents at root)
 - [ ] T050 Configure GitHub Pages settings: Settings → Pages → Deploy from branch → gh-pages → / (root)
