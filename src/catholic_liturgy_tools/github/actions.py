@@ -11,14 +11,14 @@ REPO_NAME = "catholic-liturgy-tools"
 
 
 def trigger_workflow(
-    workflow_file: str = "publish-daily-message.yml",
+    workflow_file: str = "publish-content.yml",
     branch: str = "main"
 ) -> bool:
     """
     Trigger a GitHub Actions workflow remotely.
     
     Args:
-        workflow_file: Name of the workflow file (default: publish-daily-message.yml)
+        workflow_file: Name of the workflow file (default: publish-content.yml)
         branch: Branch to run the workflow on (default: main)
         
     Returns:

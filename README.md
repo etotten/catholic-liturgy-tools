@@ -9,7 +9,8 @@ New messages are published daily at 6 AM Central Time, or whenever commits are p
 ## Features
 
 - **Daily Message Generation**: Automatically generate markdown messages with Jekyll frontmatter
-- **Index Page Generation**: Create and maintain an index of all daily messages in reverse chronological order
+- **Daily Readings from USCCB**: Fetch and generate Catholic liturgical readings from the United States Conference of Catholic Bishops (USCCB)
+- **Index Page Generation**: Create and maintain an index of all daily messages and readings in reverse chronological order
 - **GitHub Actions Integration**: Trigger automated workflows to publish content to GitHub Pages
 - **Command-Line Interface**: Simple CLI for local development and testing
 
@@ -21,6 +22,15 @@ New messages are published daily at 6 AM Central Time, or whenever commits are p
 - pip (Python package manager)
 - Git
 - A GitHub repository with Pages enabled
+- Internet connection (for fetching readings from USCCB.org)
+
+### Dependencies
+
+The package automatically installs:
+- `requests>=2.31.0` - HTTP library for fetching data
+- `beautifulsoup4>=4.12.0` - HTML parsing library
+- `lxml>=5.0.0` - Fast XML and HTML parser
+- `python-dotenv>=1.0.0` - Environment variable management
 
 ### Install from Source
 
@@ -64,21 +74,45 @@ This creates a file like `_posts/2025-01-15-daily-message.md` with:
 - A heading with the date
 - Placeholder content for daily reflection
 
-### 2. Generate an Index Page
+### 2. Generate Daily Readings
 
 ```bash
-# Scan _posts directory and create index.md
+# Generate today's readings in the readings directory
+catholic-liturgy generate-readings
+
+# Generate readings for a specific date
+catholic-liturgy generate-readings --date 2025-12-25
+
+# Generate to a custom directory
+catholic-liturgy generate-readings --output-dir custom/readings
+```
+
+This fetches readings from USCCB.org and creates a file like `readings/2025-01-15.html` with:
+- Liturgical day name (e.g., "Second Sunday in Ordinary Time")
+- All daily readings (First Reading, Responsorial Psalm, Second Reading, Gospel)
+- Biblical citations and full text
+- Embedded CSS styling for readability
+- Attribution link to USCCB source
+
+**Note**: Requires internet connection to fetch readings from USCCB.org
+
+### 3. Generate an Index Page
+
+```bash
+# Scan _posts and readings directories, create index.md
 catholic-liturgy generate-index
 
 # Use custom paths
-catholic-liturgy generate-index --posts-dir custom/posts --output-file custom-index.md
+catholic-liturgy generate-index --posts-dir custom/posts --readings-dir custom/readings --output-file custom-index.md
 ```
 
 The index page includes:
 - YAML frontmatter with "Daily Messages" title
-- Links to all message files in reverse chronological order (newest first)
+- Two sections:
+  - **Daily Messages**: Links to all message files in reverse chronological order
+  - **Daily Readings**: Links to all readings files in reverse chronological order
 
-### 3. Check GitHub Pages Status
+### 4. Check GitHub Pages Status
 
 ```bash
 # Check deployment status and recent workflow runs
@@ -91,7 +125,7 @@ This displays:
 - Recent workflow runs with status indicators
 - Direct links to view workflow details
 
-### 4. Trigger GitHub Actions Workflow
+### 5. Trigger GitHub Actions Workflow
 
 ```bash
 # Set your GitHub Personal Access Token
@@ -187,29 +221,94 @@ catholic-liturgy generate-message [--output-dir DIR]
 ```
 
 **Options:**
-- `--output-dir`: Directory for output (default: `_posts`)
+- `--output-dir`, `-o`: Directory for output (default: `_posts`)
 
 **Example:**
 ```bash
 catholic-liturgy generate-message --output-dir docs/_posts
 ```
 
-### `generate-index`
+---
 
-Generate an index page listing all daily messages.
+### `generate-readings`
+
+Fetch daily Catholic liturgical readings from USCCB.org and generate an HTML page.
 
 ```bash
-catholic-liturgy generate-index [--posts-dir DIR] [--output-file FILE]
+catholic-liturgy generate-readings [--date DATE] [--output-dir DIR]
 ```
 
 **Options:**
-- `--posts-dir`: Directory containing message files (default: `_posts`)
-- `--output-file`: Output file path (default: `index.md`)
+- `--date`, `-d`: Date to generate readings for in YYYY-MM-DD format (default: today)
+- `--output-dir`, `-o`: Output directory for HTML files (default: `readings`)
 
-**Example:**
+**Examples:**
+
 ```bash
-catholic-liturgy generate-index --posts-dir docs/_posts --output-file docs/index.md
+# Generate today's readings
+catholic-liturgy generate-readings
+
+# Generate readings for Christmas
+catholic-liturgy generate-readings --date 2025-12-25
+
+# Short options
+catholic-liturgy generate-readings -d 2025-12-25 -o custom/readings
 ```
+
+**Exit Codes:**
+- `0`: Success
+- `1`: Network error (connection failed, timeout)
+- `2`: Validation error (invalid date format)
+- `3`: Parse error (USCCB website structure changed)
+- `4`: File system error (permission denied, directory not found)
+- `5`: Unknown error
+
+**Requirements:**
+- Internet connection to fetch from USCCB.org
+- Write permissions for output directory
+
+**Output:**
+- Creates HTML file: `{output_dir}/{YYYY-MM-DD}.html`
+- Includes liturgical day name, readings with citations, embedded CSS
+- Attribution link to USCCB source
+
+---
+
+### `generate-index`
+
+Generate an index page listing all daily messages and readings.
+
+```bash
+catholic-liturgy generate-index [--posts-dir DIR] [--readings-dir DIR] [--output-file FILE]
+```
+
+**Options:**
+- `--posts-dir`, `-p`: Directory containing message files (default: `_posts`)
+- `--readings-dir`, `-r`: Directory containing readings files (default: `readings`)
+- `--output-file`, `-o`: Output file path (default: `index.md`)
+
+**Examples:**
+
+```bash
+# Scan both _posts and readings directories
+catholic-liturgy generate-index
+
+# Use custom paths
+catholic-liturgy generate-index --posts-dir docs/_posts --readings-dir docs/readings --output-file docs/index.md
+
+# Short options
+catholic-liturgy generate-index -p custom/posts -r custom/readings -o custom-index.md
+```
+
+**Output:**
+- Scans message and readings directories
+- Displays counts for both
+- Generates index.md with two sections:
+  - Daily Messages (links to markdown files)
+  - Daily Readings (links to HTML files)
+- Both sections in reverse chronological order (newest first)
+
+---
 
 ### `check-pages`
 
@@ -294,23 +393,36 @@ ls -la _posts/
 cat _posts/$(date +%Y-%m-%d)-daily-message.md
 ```
 
-#### Step 4: Generate Index
+#### Step 4: Generate Readings
 
 ```bash
-# Generate index page
+# Generate today's readings (requires internet connection)
+catholic-liturgy generate-readings
+
+# Verify file created
+ls -la readings/
+# Open in browser to view
+open readings/$(date +%Y-%m-%d).html  # macOS
+# or: start readings/$(date +%Y-%m-%d).html  # Windows
+```
+
+#### Step 5: Generate Index
+
+```bash
+# Generate index page (includes both messages and readings)
 catholic-liturgy generate-index
 
 # View the index
 cat index.md
 ```
 
-#### Step 5: Run Tests
+#### Step 6: Run Tests
 
 ```bash
 # Run all tests with coverage
 pytest
 
-# Should show: 108 passed, coverage ≥90%
+# Should show: 289 passed, 1 skipped, coverage ≥90%
 ```
 
 ### Running Tests
@@ -318,7 +430,7 @@ pytest
 The project uses pytest for testing with comprehensive coverage requirements (≥90%):
 
 ```bash
-# Run all tests
+# Run all tests (289 tests)
 pytest tests/
 
 # Run with coverage report
@@ -326,15 +438,29 @@ pytest tests/ --cov=catholic_liturgy_tools --cov-report=term-missing
 
 # Run specific test categories
 pytest tests/unit/          # Unit tests only
-pytest tests/integration/   # Integration tests only
+pytest tests/integration/   # Integration tests only (includes network tests)
 pytest tests/e2e/           # End-to-end tests only
+
+# Skip slow integration tests (that hit live USCCB site)
+pytest -m "not integration"
+
+# Run only integration tests
+pytest -m "integration"
 
 # Run specific test file
 pytest tests/unit/test_message.py
+pytest tests/unit/test_usccb_scraper.py
 
 # Run specific test function
 pytest tests/e2e/test_cli_generate.py::test_generate_message_creates_file
+pytest tests/e2e/test_cli_readings.py::test_generate_readings_with_date
 ```
+
+**Note on Integration Tests**: Some integration tests fetch live data from USCCB.org and are marked with `@pytest.mark.integration` and `@pytest.mark.slow`. These tests:
+- Require internet connection
+- Take longer to run (~17 seconds with rate limiting)
+- Can be skipped with `-m "not integration"`
+- Are useful for verifying the scraper still works with current USCCB website structure
 
 ### Generate HTML Coverage Report
 
@@ -374,17 +500,27 @@ catholic-liturgy generate-index
 # 1. Generate message
 catholic-liturgy generate-message
 
-# 2. Generate index
+# 2. Generate readings (requires internet)
+catholic-liturgy generate-readings
+
+# 3. Generate index (includes both messages and readings)
 catholic-liturgy generate-index
 
-# 3. Verify files exist
+# 4. Verify files exist
 ls -la _posts/
+ls -la readings/
 cat index.md
 
-# 4. Run tests
+# 5. View readings in browser
+open readings/$(date +%Y-%m-%d).html  # macOS
+
+# 6. Run tests (skip slow integration tests)
+pytest -m "not integration"
+
+# 7. Run all tests including integration tests
 pytest
 
-# 5. Check coverage
+# 8. Check coverage
 pytest --cov-report=term-missing
 ```
 
@@ -452,6 +588,73 @@ pytest --cov-report=term-missing
 # Add tests for those lines
 ```
 
+#### Issue: `generate-readings` network error
+
+**Symptoms**:
+```
+Error: Failed to fetch readings from USCCB.org
+Network error: Connection timeout after 30 seconds
+```
+
+**Solution**:
+```bash
+# Check internet connection
+ping bible.usccb.org
+
+# Check if USCCB site is accessible
+curl -I https://bible.usccb.org/bible/readings/
+
+# Try with explicit date
+catholic-liturgy generate-readings --date 2025-12-25
+
+# Check firewall/proxy settings if behind corporate network
+```
+
+#### Issue: `generate-readings` parse error
+
+**Symptoms**:
+```
+Error: Failed to parse readings from USCCB page
+The USCCB website structure may have changed.
+```
+
+**Solution**:
+- The USCCB website structure may have changed
+- Report issue at: https://github.com/etotten/catholic-liturgy-tools/issues
+- Include the date you were trying to fetch
+- Developers will update the scraper to match new HTML structure
+
+#### Issue: `generate-readings` returns no readings for future date
+
+**Symptoms**:
+- Command succeeds but USCCB shows no readings for distant future date
+
+**Solution**:
+- USCCB typically publishes readings 4-8 weeks in advance
+- For major feast days (Christmas, Easter), readings may be available earlier
+- Try dates closer to current date
+- Check USCCB.org directly to see if readings are published
+
+#### Issue: `generate-index` doesn't show readings
+
+**Symptoms**:
+- Index page only shows "Daily Messages" section
+- Missing "Daily Readings" section
+
+**Solution**:
+```bash
+# Ensure readings directory exists and has HTML files
+ls -la readings/
+file readings/*.html
+
+# Verify readings directory path
+catholic-liturgy generate-index --readings-dir readings
+
+# Generate a reading first if directory is empty
+catholic-liturgy generate-readings
+catholic-liturgy generate-index
+```
+
 ### Jekyll Local Preview (Optional)
 
 To preview the GitHub Pages site locally before publishing:
@@ -511,18 +714,28 @@ catholic-liturgy-tools/
 │       ├── cli.py                # CLI interface
 │       ├── generator/
 │       │   ├── message.py        # Message generation logic
-│       │   └── index.py          # Index generation logic
+│       │   ├── index.py          # Index generation logic
+│       │   └── readings.py       # Readings HTML generation
+│       ├── scraper/
+│       │   ├── usccb.py          # USCCB readings scraper
+│       │   ├── models.py         # Data models (ReadingEntry, DailyReading)
+│       │   └── exceptions.py     # Custom exceptions
 │       ├── github/
 │       │   └── actions.py        # GitHub Actions API integration
 │       └── utils/
 │           ├── date_utils.py     # Date handling utilities
-│           └── file_ops.py       # File operation utilities
+│           ├── file_ops.py       # File operation utilities
+│           ├── html_utils.py     # HTML sanitization utilities
+│           └── retry.py          # Retry decorator with backoff
 ├── tests/
 │   ├── conftest.py               # Shared pytest fixtures
+│   ├── fixtures/
+│   │   └── usccb_html/           # HTML fixtures for testing scraper
 │   ├── unit/                     # Unit tests
-│   ├── integration/              # Integration tests
+│   ├── integration/              # Integration tests (includes live USCCB tests)
 │   └── e2e/                      # End-to-end tests
 ├── _posts/                       # Generated daily messages
+├── readings/                     # Generated daily readings HTML files
 ├── index.md                      # Generated index page
 ├── _config.yml                   # Jekyll configuration
 ├── .github/
@@ -539,6 +752,31 @@ catholic-liturgy-tools/
 4. **Write E2E tests** for CLI commands (constitutional requirement)
 5. **Keep it simple** (avoid premature abstractions)
 6. **Document as you go** (update README with new commands)
+
+## Data Sources & Attribution
+
+### Daily Readings
+
+Daily Catholic liturgical readings are sourced from the **United States Conference of Catholic Bishops (USCCB)** website:
+
+- **Source**: https://bible.usccb.org/
+- **Purpose**: Educational and personal devotional use
+- **Content**: Scripture readings from the Lectionary for Mass
+- **Copyright**: Scripture texts are from the New American Bible, revised edition © 2010, 1991, 1986, 1970 Confraternity of Christian Doctrine, Washington, D.C.
+
+All generated HTML pages include:
+- Attribution link to USCCB source
+- Direct link to original readings on USCCB.org
+- Copyright notice for Scripture texts
+
+**Note**: This tool is for educational and personal devotional purposes. The readings are fetched programmatically from publicly available pages on USCCB.org. Users should respect USCCB's terms of use and copyright policies.
+
+### Limitations
+
+- **Availability**: USCCB typically publishes readings 4-8 weeks in advance
+- **Special Days**: Some feast days may have multiple Mass options (e.g., Christmas Day); the tool will detect and report these cases
+- **Website Changes**: If USCCB changes their website structure, the scraper may need updates. Please report issues on GitHub.
+- **Rate Limiting**: The tool implements polite scraping with retry logic and backoff to avoid overwhelming USCCB servers
 
 ## License
 

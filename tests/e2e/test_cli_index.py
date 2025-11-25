@@ -157,3 +157,106 @@ class TestGenerateIndexCLI:
         
         assert result.returncode == 0
         assert "generate-index" in result.stdout
+    
+    def test_generate_index_with_readings_directory(self, temp_dir, monkeypatch):
+        """Test generate-index with readings directory."""
+        # Create message files
+        posts_dir = temp_dir / "_posts"
+        posts_dir.mkdir()
+        
+        date = "2025-11-22"
+        content = generate_message_content(date)
+        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        write_file_safe(filepath, content)
+        
+        # Create readings directory with sample HTML file
+        readings_dir = temp_dir / "readings"
+        readings_dir.mkdir()
+        
+        html_content = """<!DOCTYPE html>
+<html lang="en">
+<head><title>Readings</title></head>
+<body>
+<h1>Saturday of the Thirty-Third Week in Ordinary Time</h1>
+<p>Reading content...</p>
+</body>
+</html>"""
+        (readings_dir / "2025-11-22.html").write_text(html_content, encoding="utf-8")
+        
+        monkeypatch.chdir(temp_dir)
+        
+        # Run CLI command with readings directory
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-index", "--readings-dir", "readings"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "Scanning daily messages" in result.stdout
+        assert "Found 1 message(s)" in result.stdout
+        assert "Scanning daily readings" in result.stdout
+        assert "Found 1 reading(s)" in result.stdout
+        assert "Generated index page with 1 messages and 1 readings" in result.stdout
+        
+        # Verify index content includes both sections
+        index_file = temp_dir / "index.md"
+        content = index_file.read_text()
+        assert "## Daily Messages" in content
+        assert "## Daily Readings" in content
+        assert "Saturday of the Thirty-Third Week in Ordinary Time" in content
+    
+    def test_generate_index_with_empty_readings_directory(self, temp_dir, monkeypatch):
+        """Test generate-index with empty readings directory."""
+        # Create message files
+        posts_dir = temp_dir / "_posts"
+        posts_dir.mkdir()
+        
+        date = "2025-11-22"
+        content = generate_message_content(date)
+        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        write_file_safe(filepath, content)
+        
+        # Create empty readings directory
+        readings_dir = temp_dir / "readings"
+        readings_dir.mkdir()
+        
+        monkeypatch.chdir(temp_dir)
+        
+        # Run CLI command
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-index", "--readings-dir", "readings"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "Found 1 message(s)" in result.stdout
+        assert "Found 0 reading(s)" in result.stdout
+        assert "Generated index page with 1 messages and 0 readings" in result.stdout
+    
+    def test_generate_index_short_options(self, temp_dir, monkeypatch):
+        """Test generate-index with short options."""
+        # Create message files
+        posts_dir = temp_dir / "posts"
+        posts_dir.mkdir()
+        
+        date = "2025-11-22"
+        content = generate_message_content(date)
+        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        write_file_safe(filepath, content)
+        
+        monkeypatch.chdir(temp_dir)
+        
+        # Run CLI command with short options
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-index", "-p", "posts", "-o", "test_index.md"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert (temp_dir / "test_index.md").exists()
