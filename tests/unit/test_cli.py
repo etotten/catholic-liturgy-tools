@@ -68,69 +68,91 @@ class TestGenerateMessageCommand:
 class TestGenerateIndexCommand:
     """Test suite for generate_index_command function."""
     
+    @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
+    @patch('catholic_liturgy_tools.generator.index.scan_message_files')
     @patch('catholic_liturgy_tools.generator.index.generate_index')
-    def test_generate_index_command_calls_generator(self, mock_generate):
+    def test_generate_index_command_calls_generator(self, mock_generate, mock_scan_messages, mock_scan_readings):
         """Test that command calls the generate_index function."""
-        mock_args = Mock(posts_dir='_posts', output_file='index.md')
+        mock_args = Mock(posts_dir='_posts', output_file='index.md', readings_dir='readings')
         mock_generate.return_value = Path('index.md')
+        mock_scan_messages.return_value = [Path('_posts/2025-11-22-daily-message.md')]
+        mock_scan_readings.return_value = []
         
         result = cli.generate_index_command(mock_args)
         
-        mock_generate.assert_called_once_with(posts_dir='_posts', output_file='index.md')
+        mock_generate.assert_called_once_with(posts_dir='_posts', output_file='index.md', readings_dir='readings')
         assert result == 0
     
+    @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
+    @patch('catholic_liturgy_tools.generator.index.scan_message_files')
     @patch('catholic_liturgy_tools.generator.index.generate_index')
-    def test_generate_index_command_with_custom_posts_dir(self, mock_generate):
+    def test_generate_index_command_with_custom_posts_dir(self, mock_generate, mock_scan_messages, mock_scan_readings):
         """Test command with custom posts directory."""
-        mock_args = Mock(posts_dir='custom/_posts', output_file='index.md')
+        mock_args = Mock(posts_dir='custom/_posts', output_file='index.md', readings_dir='readings')
         mock_generate.return_value = Path('index.md')
+        mock_scan_messages.return_value = []
+        mock_scan_readings.return_value = []
         
         result = cli.generate_index_command(mock_args)
         
-        mock_generate.assert_called_once_with(posts_dir='custom/_posts', output_file='index.md')
+        mock_generate.assert_called_once_with(posts_dir='custom/_posts', output_file='index.md', readings_dir='readings')
         assert result == 0
     
+    @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
+    @patch('catholic_liturgy_tools.generator.index.scan_message_files')
     @patch('catholic_liturgy_tools.generator.index.generate_index')
-    def test_generate_index_command_with_custom_output_file(self, mock_generate):
+    def test_generate_index_command_with_custom_output_file(self, mock_generate, mock_scan_messages, mock_scan_readings):
         """Test command with custom output file."""
-        mock_args = Mock(posts_dir='_posts', output_file='custom-index.md')
+        mock_args = Mock(posts_dir='_posts', output_file='custom-index.md', readings_dir='readings')
         mock_generate.return_value = Path('custom-index.md')
+        mock_scan_messages.return_value = []
+        mock_scan_readings.return_value = []
         
         result = cli.generate_index_command(mock_args)
         
-        mock_generate.assert_called_once_with(posts_dir='_posts', output_file='custom-index.md')
+        mock_generate.assert_called_once_with(posts_dir='_posts', output_file='custom-index.md', readings_dir='readings')
         assert result == 0
     
     @patch('builtins.print')
+    @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
+    @patch('catholic_liturgy_tools.generator.index.scan_message_files')
     @patch('catholic_liturgy_tools.generator.index.generate_index')
-    def test_generate_index_command_prints_success_message(self, mock_generate, mock_print):
+    def test_generate_index_command_prints_success_message(self, mock_generate, mock_scan_messages, mock_scan_readings, mock_print):
         """Test that command prints success message."""
-        mock_args = Mock(posts_dir='_posts', output_file='index.md')
+        mock_args = Mock(posts_dir='_posts', output_file='index.md', readings_dir='readings')
         output_path = Path('index.md')
         mock_generate.return_value = output_path
+        mock_scan_messages.return_value = [Path('_posts/2025-11-22-daily-message.md')]
+        mock_scan_readings.return_value = []
         
         cli.generate_index_command(mock_args)
         
-        # Verify print was called with success message
-        assert mock_print.call_count == 2
-        first_call = str(mock_print.call_args_list[0][0][0])
-        assert 'Generated index' in first_call
+        # Verify print was called (should be 6: scanning messages, found X, scanning readings, found Y, generated, file)
+        assert mock_print.call_count == 6
+        # Check that success message contains both counts
+        success_calls = [str(call[0][0]) for call in mock_print.call_args_list if 'Generated index page' in str(call[0][0])]
+        assert len(success_calls) == 1
+        assert 'messages and' in success_calls[0]
+        assert 'readings' in success_calls[0]
     
     @patch('builtins.print')
+    @patch('catholic_liturgy_tools.generator.index.scan_readings_files')
+    @patch('catholic_liturgy_tools.generator.index.scan_message_files')
     @patch('catholic_liturgy_tools.generator.index.generate_index')
-    def test_generate_index_command_handles_exception(self, mock_generate, mock_print):
+    def test_generate_index_command_handles_exception(self, mock_generate, mock_scan_messages, mock_scan_readings, mock_print):
         """Test command handles exceptions and returns error code."""
-        mock_args = Mock(posts_dir='_posts', output_file='index.md')
+        mock_args = Mock(posts_dir='_posts', output_file='index.md', readings_dir='readings')
+        mock_scan_messages.return_value = []
+        mock_scan_readings.return_value = []
         mock_generate.side_effect = Exception("Test error")
         
         result = cli.generate_index_command(mock_args)
         
         assert result == 1
-        # Verify error was printed
-        mock_print.assert_called()
-        call_args = str(mock_print.call_args[0][0])
-        assert 'Error' in call_args
-        assert 'Test error' in call_args
+        # Verify error was printed (should be in stderr)
+        error_calls = [call for call in mock_print.call_args_list if 'Error' in str(call[0][0])]
+        assert len(error_calls) > 0
+        assert 'Test error' in str(error_calls[0][0][0])
 
 
 class TestTriggerPublishCommand:

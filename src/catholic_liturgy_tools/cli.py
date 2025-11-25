@@ -29,18 +29,108 @@ def generate_message_command(args):
         return 1
 
 
-def generate_index_command(args):
-    """Execute the generate-index command."""
-    from catholic_liturgy_tools.generator.index import generate_index
+def generate_readings_command(args):
+    """Execute the generate-readings command."""
+    from datetime import datetime
+    from catholic_liturgy_tools.scraper.usccb import USCCBReadingsScraper
+    from catholic_liturgy_tools.scraper.exceptions import NetworkError, ParseError, ValidationError, DateError
+    from catholic_liturgy_tools.generator.readings import generate_readings_page
+    from catholic_liturgy_tools.utils.date_utils import get_today
+    
+    # Determine date to fetch
+    if args.date:
+        date_str = args.date
+        
+        # Validate date format
+        try:
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+            # Format display date
+            date_display = date_obj.strftime("%B %d, %Y")
+        except ValueError:
+            print(f"Error: Invalid date format: {date_str}", file=sys.stderr)
+            print("Expected format: YYYY-MM-DD", file=sys.stderr)
+            print("Example: 2025-12-25", file=sys.stderr)
+            return 2
+    else:
+        date_str = get_today()
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        date_display = date_obj.strftime("%B %d, %Y")
+    
+    # Display progress
+    print(f"Fetching readings for {date_display}...")
     
     try:
-        result_path = generate_index(posts_dir=args.posts_dir, output_file=args.output_file)
+        # Initialize scraper and fetch readings
+        scraper = USCCBReadingsScraper()
+        reading = scraper.get_readings_for_date(date_obj)
         
-        # Count message files to report
-        from catholic_liturgy_tools.generator.index import scan_message_files
+        print(f'Successfully fetched readings for "{reading.liturgical_day}"')
+        
+        # Generate HTML page
+        output_path = generate_readings_page(reading, args.output_dir)
+        
+        print(f"Generated HTML page: {output_path}")
+        return 0
+        
+    except NetworkError as e:
+        print("Error: Failed to fetch readings from USCCB.org", file=sys.stderr)
+        print(f"Network error: {e}", file=sys.stderr)
+        print("Please check your internet connection and try again.", file=sys.stderr)
+        return 1
+        
+    except DateError as e:
+        print(f"Error: Invalid date: {e}", file=sys.stderr)
+        return 2
+        
+    except ParseError as e:
+        print("Error: Failed to parse readings from USCCB page", file=sys.stderr)
+        print("The USCCB website structure may have changed.", file=sys.stderr)
+        print("Please report this issue at: https://github.com/etotten/catholic-liturgy-tools/issues", file=sys.stderr)
+        return 3
+        
+    except ValidationError as e:
+        print(f"Error: Data validation failed: {e}", file=sys.stderr)
+        print("The USCCB website structure may have changed.", file=sys.stderr)
+        print("Please report this issue at: https://github.com/etotten/catholic-liturgy-tools/issues", file=sys.stderr)
+        return 3
+        
+    except OSError as e:
+        print(f"Error: Failed to create output file: {args.output_dir}/{date_str}.html", file=sys.stderr)
+        print(f"{e}", file=sys.stderr)
+        print("Please check directory permissions.", file=sys.stderr)
+        return 4
+        
+    except Exception as e:
+        print(f"Error: Unexpected error occurred: {e}", file=sys.stderr)
+        return 5
+
+
+def generate_index_command(args):
+    """Execute the generate-index command."""
+    from catholic_liturgy_tools.generator.index import generate_index, scan_message_files, scan_readings_files
+    
+    try:
+        # Display progress
+        print(f"Scanning daily messages in {args.posts_dir}...")
         message_count = len(scan_message_files(args.posts_dir))
+        print(f"Found {message_count} message(s)")
         
-        print(f"Generated index page with {message_count} messages")
+        # Scan readings if directory provided
+        readings_count = 0
+        if args.readings_dir:
+            print(f"\nScanning daily readings in {args.readings_dir}...")
+            readings_count = len(scan_readings_files(args.readings_dir))
+            print(f"Found {readings_count} reading(s)")
+        
+        # Generate index
+        result_path = generate_index(
+            posts_dir=args.posts_dir, 
+            output_file=args.output_file,
+            readings_dir=args.readings_dir
+        )
+        
+        # Display summary
+        print(f"\nGenerated index page with {message_count} messages and {readings_count} readings")
         print(f"File: {result_path}")
         return 0
     except OSError as e:
@@ -182,18 +272,45 @@ def main():
     )
     generate_parser.set_defaults(func=generate_message_command)
     
+    # generate-readings subcommand
+    readings_parser = subparsers.add_parser(
+        "generate-readings",
+        help="Generate HTML page with daily Catholic liturgical readings from USCCB.org",
+    )
+    readings_parser.add_argument(
+        "--date",
+        "-d",
+        default=None,
+        help="Date to generate readings for in YYYY-MM-DD format (default: today)",
+    )
+    readings_parser.add_argument(
+        "--output-dir",
+        "-o",
+        default="readings",
+        help="Output directory for HTML files (default: readings)",
+    )
+    readings_parser.set_defaults(func=generate_readings_command)
+    
     # generate-index subcommand
     index_parser = subparsers.add_parser(
         "generate-index",
-        help="Generate an index page with links to all daily messages",
+        help="Generate an index page with links to all daily messages and readings",
     )
     index_parser.add_argument(
         "--posts-dir",
+        "-p",
         default="_posts",
         help="Directory containing message files (default: _posts)",
     )
     index_parser.add_argument(
+        "--readings-dir",
+        "-r",
+        default="readings",
+        help="Directory containing readings HTML files (default: readings)",
+    )
+    index_parser.add_argument(
         "--output-file",
+        "-o",
         default="index.md",
         help="Output file for index (default: index.md)",
     )
