@@ -14,13 +14,13 @@ class TestGenerateIndexCLI:
     def test_generate_index_command_success(self, temp_dir, monkeypatch):
         """Test that generate-index command runs successfully."""
         # Create some message files first
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         dates = ["2025-11-20", "2025-11-21", "2025-11-22"]
         for date in dates:
             content = generate_message_content(date)
-            filepath = get_message_file_path(date, output_dir=str(posts_dir))
+            filepath = get_message_file_path(date, output_dir=str(messages_dir))
             write_file_safe(filepath, content)
         
         # Change to temp directory
@@ -36,17 +36,17 @@ class TestGenerateIndexCLI:
         # Verify command succeeded
         assert result.returncode == 0
         assert "Generated index" in result.stdout
-        assert "index.md" in result.stdout
+        assert "index.html" in result.stdout
     
     def test_generate_index_command_creates_file(self, temp_dir, monkeypatch):
         """Test that generate-index command creates the expected file."""
         # Create message files
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         date = "2025-11-22"
         content = generate_message_content(date)
-        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        filepath = get_message_file_path(date, output_dir=str(messages_dir))
         write_file_safe(filepath, content)
         
         # Change to temp directory
@@ -62,19 +62,19 @@ class TestGenerateIndexCLI:
         assert result.returncode == 0
         
         # Verify index file was created
-        index_file = temp_dir / "index.md"
+        index_file = temp_dir / "_site" / "index.html"
         assert index_file.exists()
         
         # Verify file content
         content = index_file.read_text()
-        assert "layout: page" in content
+        assert "<!DOCTYPE html>" in content
         assert "2025-11-22" in content
     
     def test_generate_index_with_no_messages(self, temp_dir, monkeypatch):
         """Test generate-index when no message files exist."""
         # Create empty _posts directory
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         monkeypatch.chdir(temp_dir)
         
@@ -89,7 +89,7 @@ class TestGenerateIndexCLI:
         assert result.returncode == 0
         
         # Index file should still be created
-        index_file = temp_dir / "index.md"
+        index_file = temp_dir / "_site" / "index.html"
         assert index_file.exists()
     
     def test_generate_index_without_posts_directory(self, temp_dir, monkeypatch):
@@ -107,18 +107,18 @@ class TestGenerateIndexCLI:
         assert result.returncode == 0
         
         # Index should be created
-        index_file = temp_dir / "index.md"
+        index_file = temp_dir / "_site" / "index.html"
         assert index_file.exists()
     
     def test_generate_index_idempotent(self, temp_dir, monkeypatch):
         """Test that running generate-index multiple times is idempotent."""
         # Create message files
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         date = "2025-11-22"
         content = generate_message_content(date)
-        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        filepath = get_message_file_path(date, output_dir=str(messages_dir))
         write_file_safe(filepath, content)
         
         monkeypatch.chdir(temp_dir)
@@ -131,7 +131,7 @@ class TestGenerateIndexCLI:
         )
         assert result1.returncode == 0
         
-        index_file = temp_dir / "index.md"
+        index_file = temp_dir / "_site" / "index.html"
         content1 = index_file.read_text()
         
         # Run second time
@@ -161,12 +161,12 @@ class TestGenerateIndexCLI:
     def test_generate_index_with_readings_directory(self, temp_dir, monkeypatch):
         """Test generate-index with readings directory."""
         # Create message files
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         date = "2025-11-22"
         content = generate_message_content(date)
-        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        filepath = get_message_file_path(date, output_dir=str(messages_dir))
         write_file_safe(filepath, content)
         
         # Create readings directory with sample HTML file
@@ -201,21 +201,21 @@ class TestGenerateIndexCLI:
         assert "Generated index page with 1 messages and 1 readings" in result.stdout
         
         # Verify index content includes both sections
-        index_file = temp_dir / "index.md"
+        index_file = temp_dir / "_site" / "index.html"
         content = index_file.read_text()
-        assert "## Daily Messages" in content
-        assert "## Daily Readings" in content
+        assert "<h2>Daily Messages</h2>" in content
+        assert "<h2>Daily Readings</h2>" in content
         assert "Saturday of the Thirty-Third Week in Ordinary Time" in content
     
     def test_generate_index_with_empty_readings_directory(self, temp_dir, monkeypatch):
         """Test generate-index with empty readings directory."""
         # Create message files
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
         
         date = "2025-11-22"
         content = generate_message_content(date)
-        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        filepath = get_message_file_path(date, output_dir=str(messages_dir))
         write_file_safe(filepath, content)
         
         # Create empty readings directory
@@ -240,12 +240,12 @@ class TestGenerateIndexCLI:
     def test_generate_index_short_options(self, temp_dir, monkeypatch):
         """Test generate-index with short options."""
         # Create message files
-        posts_dir = temp_dir / "posts"
-        posts_dir.mkdir()
+        messages_dir = temp_dir / "posts"
+        messages_dir.mkdir(parents=True)
         
         date = "2025-11-22"
         content = generate_message_content(date)
-        filepath = get_message_file_path(date, output_dir=str(posts_dir))
+        filepath = get_message_file_path(date, output_dir=str(messages_dir))
         write_file_safe(filepath, content)
         
         monkeypatch.chdir(temp_dir)
@@ -253,10 +253,10 @@ class TestGenerateIndexCLI:
         # Run CLI command with short options
         result = subprocess.run(
             [sys.executable, "-m", "catholic_liturgy_tools.cli", 
-             "generate-index", "-p", "posts", "-o", "test_index.md"],
+             "generate-index", "-p", "posts", "-o", "test_index.html"],
             capture_output=True,
             text=True,
         )
         
         assert result.returncode == 0
-        assert (temp_dir / "test_index.md").exists()
+        assert (temp_dir / "test_index.html").exists()

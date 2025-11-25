@@ -114,17 +114,17 @@
 
 ### Tests for User Story 3
 
-- [ ] T027 [US3] Add workflow validation test (verify workflow YAML syntax is valid)
-- [ ] T028 [US3] Manual test: Deploy to feature branch, verify gh-pages branch created with correct structure
+- [X] T027 [US3] Add workflow validation test (verify workflow YAML syntax is valid)
+- [X] T028 [US3] Manual test: Deploy to feature branch, verify gh-pages branch created with correct structure
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Update .github/workflows/publish-content.yml per contracts/github-actions.md (remove git commit steps)
-- [ ] T030 [US3] Add peaceiris/actions-gh-pages@v3 deployment step to workflow
-- [ ] T031 [US3] Configure publish_dir to `./_site` in workflow
-- [ ] T032 [US3] Set force_orphan to true in workflow for clean gh-pages history
-- [ ] T033 [US3] Update workflow permissions to only `contents: write`
-- [ ] T034 [US3] Remove old Pages artifact upload and deploy job from workflow
+- [X] T029 [US3] Update .github/workflows/publish-content.yml per contracts/github-actions.md (remove git commit steps)
+- [X] T030 [US3] Add peaceiris/actions-gh-pages@v3 deployment step to workflow
+- [X] T031 [US3] Configure publish_dir to `./_site` in workflow
+- [X] T032 [US3] Set force_orphan to true in workflow for clean gh-pages history
+- [X] T033 [US3] Update workflow permissions to only `contents: write`
+- [X] T034 [US3] Remove old Pages artifact upload and deploy job from workflow
 
 **Checkpoint**: User Story 3 complete - workflow deploys to gh-pages branch, all US3 tests pass
 
@@ -138,16 +138,16 @@
 
 ### Tests for User Story 4
 
-- [ ] T035 [P] [US4] Add link format test in tests/unit/test_index.py (verify relative paths: `messages/...`, `readings/...`)
-- [ ] T036 [P] [US4] Add link sorting test in tests/unit/test_index.py (verify reverse chronological order)
-- [ ] T037 [US4] Add integration test for complete site generation and link validation
+- [X] T035 [P] [US4] Add link format test in tests/unit/test_index.py (verify relative paths: `messages/...`, `readings/...`)
+- [X] T036 [P] [US4] Add link sorting test in tests/unit/test_index.py (verify reverse chronological order)
+- [X] T037 [US4] Add integration test for complete site generation and link validation
 
 ### Implementation for User Story 4
 
-- [ ] T038 [US4] Update link generation in src/catholic_liturgy_tools/generator/index.py (ensure relative paths per contracts/html-format.md)
-- [ ] T039 [US4] Implement reverse chronological sorting for messages list in index generator
-- [ ] T040 [US4] Implement reverse chronological sorting for readings list in index generator
-- [ ] T041 [US4] Add link text formatting for readings (include liturgical day title per contracts/html-format.md)
+- [X] T038 [US4] Update link generation in src/catholic_liturgy_tools/generator/index.py (ensure relative paths per contracts/html-format.md)
+- [X] T039 [US4] Implement reverse chronological sorting for messages list in index generator
+- [X] T040 [US4] Implement reverse chronological sorting for readings list in index generator
+- [X] T041 [US4] Add link text formatting for readings (include liturgical day title per contracts/html-format.md)
 
 **Checkpoint**: User Story 4 complete - all links work correctly, all US4 tests pass
 

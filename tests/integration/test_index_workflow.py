@@ -68,18 +68,19 @@ class TestIndexWorkflow:
         write_file_safe(filepath, content)
         
         # Generate index twice
-        index_path = generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.md"))
+        index_path = generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.html"))
         index_content1 = index_path.read_text()
         
         # Regenerate index
-        generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.md"))
+        generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.html"))
         index_content2 = index_path.read_text()
         
         # Content should be identical (no duplicates)
         assert index_content1 == index_content2
         
-        # Count occurrences of date in link format
-        link_pattern = f"[Daily Message for {date}]"
+        # Count occurrences of date in HTML link format (just the date text, which appears once per link)
+        # HTML format: <a href="messages/2025-11-22-daily-message.md">2025-11-22</a>
+        link_pattern = f'<a href="messages/{date}-daily-message.md">{date}</a>'
         assert index_content2.count(link_pattern) == 1
     
     def test_index_updates_when_new_message_added(self, temp_dir):
@@ -132,7 +133,7 @@ class TestIndexWorkflow:
             write_file_safe(filepath, content)
         
         # Generate index
-        index_path = generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.md"))
+        index_path = generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.html"))
         
         # Verify complete structure
         assert index_path.exists()
@@ -142,8 +143,7 @@ class TestIndexWorkflow:
         
         # Verify index content
         index_content = index_path.read_text()
-        assert "---" in index_content  # YAML frontmatter
-        assert "layout: page" in index_content
+        assert "<!DOCTYPE html>" in index_content  # HTML5 document
         for date in dates:
             assert date in index_content
             assert f"{date}-daily-message.md" in index_content

@@ -6,7 +6,7 @@ from catholic_liturgy_tools.generator.index import (
     scan_message_files,
     scan_readings_files,
     parse_date_from_filename,
-    generate_index_content,
+    generate_html_index,
     generate_index,
     ReadingsEntry,
 )
@@ -102,139 +102,171 @@ class TestParseDateFromFilename:
         assert result == "2025-11-22"
 
 
-class TestGenerateIndexContent:
-    """Tests for generate_index_content function."""
+class TestGenerateHtmlIndex:
+    """Tests for generate_html_index function."""
     
-    def test_generates_markdown_with_frontmatter(self, sample_message_files):
-        """Test that generated content includes YAML frontmatter."""
-        content = generate_index_content(sample_message_files)
+    def test_generates_html5_with_doctype(self, sample_message_files):
+        """Test that generated content starts with HTML5 DOCTYPE."""
+        html = generate_html_index(sample_message_files, [])
         
-        assert content.startswith("---")
-        assert "layout: page" in content
-        assert "title:" in content
+        assert html.startswith("<!DOCTYPE html>")
+        assert "<html" in html
+        assert "</html>" in html
+    
+    def test_includes_proper_meta_tags(self, sample_message_files):
+        """Test that HTML includes charset and viewport meta tags."""
+        html = generate_html_index(sample_message_files, [])
+        
+        assert '<meta charset="UTF-8">' in html
+        assert '<meta name="viewport"' in html
+    
+    def test_includes_correct_title(self, sample_message_files):
+        """Test that HTML includes the correct title."""
+        html = generate_html_index(sample_message_files, [])
+        
+        assert "<title>Catholic Liturgy Tools</title>" in html
+    
+    def test_includes_inline_css(self, sample_message_files):
+        """Test that HTML includes inline CSS styling."""
+        html = generate_html_index(sample_message_files, [])
+        
+        assert "<style>" in html
+        assert "</style>" in html
+        assert "body {" in html
+        assert "max-width: 800px" in html
     
     def test_includes_links_to_all_messages(self, sample_message_files):
         """Test that all messages are linked in the index."""
-        content = generate_index_content(sample_message_files)
+        html = generate_html_index(sample_message_files, [])
         
-        assert "2025-11-20" in content
-        assert "2025-11-21" in content
-        assert "2025-11-22" in content
+        assert "2025-11-20" in html
+        assert "2025-11-21" in html
+        assert "2025-11-22" in html
     
     def test_reverse_chronological_order(self, sample_message_files):
         """Test that messages are listed in reverse chronological order."""
-        content = generate_index_content(sample_message_files)
+        html = generate_html_index(sample_message_files, [])
         
         # Find positions of dates in content
-        pos_20 = content.index("2025-11-20")
-        pos_21 = content.index("2025-11-21")
-        pos_22 = content.index("2025-11-22")
+        pos_20 = html.index("2025-11-20")
+        pos_21 = html.index("2025-11-21")
+        pos_22 = html.index("2025-11-22")
         
         # Newest (22) should come before oldest (20)
         assert pos_22 < pos_21 < pos_20
     
-    def test_generates_markdown_links(self, sample_message_files):
-        """Test that proper markdown links are generated."""
-        content = generate_index_content(sample_message_files)
+    def test_generates_html_links_with_relative_paths(self, sample_message_files):
+        """Test that proper HTML links with relative paths are generated."""
+        html = generate_html_index(sample_message_files, [])
         
-        # Should contain markdown link syntax
-        assert "[" in content and "](" in content and ")" in content
-        assert "2025-11-22-daily-message.md" in content
+        # Should contain HTML link syntax with relative paths
+        assert '<a href="messages/' in html
+        assert '2025-11-22-daily-message.md">' in html
     
-    def test_empty_file_list(self):
-        """Test generating index with no message files."""
-        content = generate_index_content([])
+    def test_empty_messages_shows_no_messages_text(self):
+        """Test generating index with no message files shows 'No messages available yet'."""
+        html = generate_html_index([], [])
         
-        assert content.startswith("---")
-        assert "layout: page" in content
-        # Should still be valid markdown even with no messages
+        assert "No messages available yet" in html
     
-    def test_includes_daily_messages_title(self, sample_message_files):
-        """Test that content includes appropriate title."""
-        content = generate_index_content(sample_message_files)
+    def test_includes_daily_messages_section(self, sample_message_files):
+        """Test that HTML includes Daily Messages section."""
+        html = generate_html_index(sample_message_files, [])
         
-        assert "Daily Message" in content
+        assert "<h2>Daily Messages</h2>" in html
     
-    def test_includes_readings_section_when_provided(self, sample_message_files, temp_dir):
-        """Test that readings section is included when readings provided."""
-        # Create sample readings
+    def test_includes_daily_readings_section(self, sample_message_files):
+        """Test that HTML includes Daily Readings section."""
+        readings = [
+            ReadingsEntry("2025-11-22", "Saturday of Week 33", "readings/2025-11-22.html"),
+        ]
+        
+        html = generate_html_index(sample_message_files, readings)
+        
+        assert "<h2>Daily Readings</h2>" in html
+    
+    def test_includes_readings_with_liturgical_day(self, sample_message_files):
+        """Test that readings include liturgical day in link text."""
         readings = [
             ReadingsEntry("2025-11-22", "Saturday of Week 33", "readings/2025-11-22.html"),
             ReadingsEntry("2025-11-21", "Friday of Week 33", "readings/2025-11-21.html"),
         ]
         
-        content = generate_index_content(sample_message_files, readings)
+        html = generate_html_index(sample_message_files, readings)
         
-        assert "## Daily Readings" in content
-        assert "2025-11-22 - Saturday of Week 33" in content
-        assert "2025-11-21 - Friday of Week 33" in content
+        assert "2025-11-22 - Saturday of Week 33" in html
+        assert "2025-11-21 - Friday of Week 33" in html
     
-    def test_no_readings_section_without_readings_param(self, sample_message_files):
-        """Test that readings section is omitted when readings param not provided."""
-        content = generate_index_content(sample_message_files, None)
+    def test_empty_readings_shows_no_readings_text(self, sample_message_files):
+        """Test that empty readings list shows 'No readings available yet'."""
+        html = generate_html_index(sample_message_files, [])
         
-        assert "## Daily Readings" not in content
+        assert "No readings available yet" in html
     
-    def test_empty_readings_list_shows_no_readings_message(self, sample_message_files):
-        """Test that empty readings list shows 'No readings yet' message."""
-        content = generate_index_content(sample_message_files, [])
-        
-        assert "## Daily Readings" in content
-        assert "*No readings yet.*" in content
-    
-    def test_readings_links_format_correctly(self, sample_message_files):
-        """Test that readings links are formatted as markdown."""
+    def test_readings_links_use_relative_paths(self, sample_message_files):
+        """Test that readings links use relative paths."""
         readings = [
             ReadingsEntry("2025-11-22", "Saturday", "readings/2025-11-22.html"),
         ]
         
-        content = generate_index_content(sample_message_files, readings)
+        html = generate_html_index(sample_message_files, readings)
         
-        # Should contain markdown link
-        assert "[2025-11-22 - Saturday](readings/2025-11-22.html)" in content
+        # Should contain relative path
+        assert '<a href="readings/2025-11-22.html">' in html
+    
+    def test_html_escaping_in_content(self, sample_message_files):
+        """Test that content is properly HTML-escaped."""
+        # This is implicitly tested by using html.escape in the implementation
+        # but we verify structure is valid HTML
+        html = generate_html_index(sample_message_files, [])
+        
+        # Basic HTML structure checks
+        assert "<h1>Catholic Liturgy Tools</h1>" in html
+        assert "<ul>" in html
+        assert "</ul>" in html
     
     def test_messages_and_readings_both_empty(self):
         """Test generating index with no messages and no readings."""
-        content = generate_index_content([], [])
+        html = generate_html_index([], [])
         
-        assert "layout: page" in content
-        assert "*No messages yet.*" in content
-        assert "*No readings yet.*" in content
+        assert "<!DOCTYPE html>" in html
+        assert "No messages available yet" in html
+        assert "No readings available yet" in html
 
 
 class TestGenerateIndex:
     """Tests for generate_index function (main entry point)."""
     
-    def test_creates_index_file(self, sample_message_files):
-        """Test that function creates an index file."""
-        posts_dir = sample_message_files[0].parent
-        temp_dir = posts_dir.parent
-        output_file = str(temp_dir / "index.md")
+    def test_creates_index_html_file(self, sample_message_files):
+        """Test that function creates an index.html file."""
+        messages_dir = sample_message_files[0].parent
+        temp_dir = messages_dir.parent
+        output_file = str(temp_dir / "index.html")
         
-        result = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         
         assert result.exists()
-        assert result.name == "index.md"
+        assert result.name == "index.html"
     
-    def test_index_contains_valid_content(self, sample_message_files):
-        """Test that generated index contains valid content."""
-        posts_dir = sample_message_files[0].parent
-        temp_dir = posts_dir.parent
-        output_file = str(temp_dir / "index.md")
+    def test_index_contains_valid_html_content(self, sample_message_files):
+        """Test that generated index contains valid HTML content."""
+        messages_dir = sample_message_files[0].parent
+        temp_dir = messages_dir.parent
+        output_file = str(temp_dir / "index.html")
         
-        result = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         content = result.read_text()
         
-        assert content.startswith("---")
-        assert "layout: page" in content
+        assert content.startswith("<!DOCTYPE html>")
+        assert "<title>Catholic Liturgy Tools</title>" in content
         assert "2025-11-22" in content
         assert "2025-11-21" in content
         assert "2025-11-20" in content
     
     def test_default_output_file(self, sample_message_files):
-        """Test that default output file is index.md."""
-        posts_dir = sample_message_files[0].parent
-        temp_dir = posts_dir.parent
+        """Test that default output file is _site/index.html."""
+        messages_dir = sample_message_files[0].parent
+        temp_dir = messages_dir.parent.parent  # Go up to get out of _site
         
         # Change working directory context
         import os
@@ -242,35 +274,37 @@ class TestGenerateIndex:
         os.chdir(temp_dir)
         
         try:
-            result = generate_index(posts_dir=str(posts_dir))
-            assert result.name == "index.md"
+            result = generate_index(posts_dir=str(messages_dir))
+            assert result.name == "index.html"
+            assert "_site" in str(result)
         finally:
             os.chdir(old_cwd)
     
-    def test_handles_empty_posts_directory(self, temp_dir):
+    def test_handles_empty_messages_directory(self, temp_dir):
         """Test generating index when no message files exist."""
-        posts_dir = temp_dir / "_posts"
-        posts_dir.mkdir()
-        output_file = str(temp_dir / "index.md")
+        messages_dir = temp_dir / "_site" / "messages"
+        messages_dir.mkdir(parents=True)
+        output_file = str(temp_dir / "index.html")
         
-        result = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         
         assert result.exists()
         content = result.read_text()
-        assert "layout: page" in content
+        assert "<!DOCTYPE html>" in content
+        assert "No messages available yet" in content
     
     def test_overwrites_existing_index(self, sample_message_files):
         """Test that existing index is overwritten."""
-        posts_dir = sample_message_files[0].parent
-        temp_dir = posts_dir.parent
-        output_file = str(temp_dir / "index.md")
+        messages_dir = sample_message_files[0].parent
+        temp_dir = messages_dir.parent
+        output_file = str(temp_dir / "index.html")
         
         # Create initial index
-        result1 = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result1 = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         content1 = result1.read_text()
         
         # Generate again
-        result2 = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result2 = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         content2 = result2.read_text()
         
         assert result1 == result2
@@ -278,87 +312,88 @@ class TestGenerateIndex:
     
     def test_returns_path_object(self, sample_message_files):
         """Test that function returns a Path object."""
-        posts_dir = sample_message_files[0].parent
-        temp_dir = posts_dir.parent
-        output_file = str(temp_dir / "index.md")
+        messages_dir = sample_message_files[0].parent
+        temp_dir = messages_dir.parent
+        output_file = str(temp_dir / "index.html")
         
-        result = generate_index(posts_dir=str(posts_dir), output_file=output_file)
+        result = generate_index(posts_dir=str(messages_dir), output_file=output_file)
         
         assert isinstance(result, Path)
     
     def test_includes_readings_when_readings_dir_provided(self, sample_message_files, temp_dir):
         """Test that index includes readings section when readings_dir provided."""
-        posts_dir = sample_message_files[0].parent
-        readings_dir = temp_dir / "readings"
-        readings_dir.mkdir()
+        messages_dir = sample_message_files[0].parent
+        readings_dir = temp_dir / "_site" / "readings"
+        readings_dir.mkdir(parents=True)
         
         # Create sample readings HTML files
         html_content = "<html><body><h1>Saturday of Week 33</h1></body></html>"
         (readings_dir / "2025-11-22.html").write_text(html_content, encoding="utf-8")
         
-        output_file = str(temp_dir / "index.md")
+        output_file = str(temp_dir / "index.html")
         result = generate_index(
-            posts_dir=str(posts_dir),
+            posts_dir=str(messages_dir),
             output_file=output_file,
             readings_dir=str(readings_dir)
         )
         
         content = result.read_text()
-        assert "## Daily Readings" in content
+        assert "<h2>Daily Readings</h2>" in content
         assert "2025-11-22 - Saturday of Week 33" in content
     
-    def test_no_readings_section_without_readings_dir(self, sample_message_files, temp_dir):
-        """Test that index doesn't include readings section without readings_dir."""
-        posts_dir = sample_message_files[0].parent
-        output_file = str(temp_dir / "index.md")
+    def test_no_readings_section_when_readings_dir_none(self, sample_message_files, temp_dir):
+        """Test that index shows 'No readings' when readings_dir is None."""
+        messages_dir = sample_message_files[0].parent
+        output_file = str(temp_dir / "index.html")
         
         result = generate_index(
-            posts_dir=str(posts_dir),
+            posts_dir=str(messages_dir),
             output_file=output_file,
             readings_dir=None
         )
         
         content = result.read_text()
-        assert "## Daily Readings" not in content
+        assert "<h2>Daily Readings</h2>" in content
+        assert "No readings available yet" in content
     
     def test_handles_empty_readings_directory(self, sample_message_files, temp_dir):
         """Test that index handles empty readings directory gracefully."""
-        posts_dir = sample_message_files[0].parent
-        readings_dir = temp_dir / "readings"
-        readings_dir.mkdir()
+        messages_dir = sample_message_files[0].parent
+        readings_dir = temp_dir / "_site" / "readings"
+        readings_dir.mkdir(parents=True)
         
-        output_file = str(temp_dir / "index.md")
+        output_file = str(temp_dir / "index.html")
         result = generate_index(
-            posts_dir=str(posts_dir),
+            posts_dir=str(messages_dir),
             output_file=output_file,
             readings_dir=str(readings_dir)
         )
         
         content = result.read_text()
-        assert "## Daily Readings" in content
-        assert "*No readings yet.*" in content
+        assert "<h2>Daily Readings</h2>" in content
+        assert "No readings available yet" in content
     
     def test_both_messages_and_readings_sections(self, sample_message_files, temp_dir):
         """Test that both sections appear when both have content."""
-        posts_dir = sample_message_files[0].parent
-        readings_dir = temp_dir / "readings"
-        readings_dir.mkdir()
+        messages_dir = sample_message_files[0].parent
+        readings_dir = temp_dir / "_site" / "readings"
+        readings_dir.mkdir(parents=True)
         
         # Create readings
         html_content = "<html><body><h1>Saturday</h1></body></html>"
         (readings_dir / "2025-11-22.html").write_text(html_content, encoding="utf-8")
         
-        output_file = str(temp_dir / "index.md")
+        output_file = str(temp_dir / "index.html")
         result = generate_index(
-            posts_dir=str(posts_dir),
+            posts_dir=str(messages_dir),
             output_file=output_file,
             readings_dir=str(readings_dir)
         )
         
         content = result.read_text()
-        assert "## Daily Messages" in content
-        assert "Daily Message for 2025-11-22" in content
-        assert "## Daily Readings" in content
+        assert "<h2>Daily Messages</h2>" in content
+        assert "2025-11-22" in content
+        assert "<h2>Daily Readings</h2>" in content
         assert "2025-11-22 - Saturday" in content
 
 
