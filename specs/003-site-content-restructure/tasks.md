@@ -87,20 +87,20 @@
 
 ### Tests for User Story 2
 
-- [ ] T016 [P] [US2] Rewrite unit tests in tests/unit/test_index.py for HTML generation (verify HTML structure, CSS presence, title)
-- [ ] T017 [P] [US2] Update integration test in tests/integration/test_index_workflow.py (verify HTML output, not Markdown)
-- [ ] T018 [P] [US2] Update E2E test in tests/e2e/test_cli_index.py (verify `_site/index.html` created, not `index.md`)
-- [ ] T019 [US2] Add HTML validation test in tests/unit/test_index.py (verify well-formed HTML5, proper DOCTYPE)
+- [X] T016 [P] [US2] Rewrite unit tests in tests/unit/test_index.py for HTML generation (verify HTML structure, CSS presence, title)
+- [X] T017 [P] [US2] Update integration test in tests/integration/test_index_workflow.py (verify HTML output, not Markdown)
+- [X] T018 [P] [US2] Update E2E test in tests/e2e/test_cli_index.py (verify `_site/index.html` created, not `index.md`)
+- [X] T019 [US2] Add HTML validation test in tests/unit/test_index.py (verify well-formed HTML5, proper DOCTYPE)
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Rewrite index generator in src/catholic_liturgy_tools/generator/index.py to generate HTML instead of Markdown
-- [ ] T021 [US2] Implement HTML template with inline CSS per contracts/html-format.md specification
-- [ ] T022 [US2] Add DOCTYPE, meta tags (charset UTF-8, viewport), and title "Catholic Liturgy Tools"
-- [ ] T023 [US2] Implement two sections: "Daily Messages" and "Daily Readings" with proper h2 headings
-- [ ] T024 [US2] Update default output path in index generator to `_site/index.html`
-- [ ] T025 [US2] Update CLI command default in src/catholic_liturgy_tools/cli.py for generate-index command
-- [ ] T026 [US2] Ensure HTML escaping for special characters in link text per contracts/html-format.md
+- [X] T020 [US2] Rewrite index generator in src/catholic_liturgy_tools/generator/index.py to generate HTML instead of Markdown
+- [X] T021 [US2] Implement HTML template with inline CSS per contracts/html-format.md specification
+- [X] T022 [US2] Add DOCTYPE, meta tags (charset UTF-8, viewport), and title "Catholic Liturgy Tools"
+- [X] T023 [US2] Implement two sections: "Daily Messages" and "Daily Readings" with proper h2 headings
+- [X] T024 [US2] Update default output path in index generator to `_site/index.html`
+- [X] T025 [US2] Update CLI command default in src/catholic_liturgy_tools/cli.py for generate-index command
+- [X] T026 [US2] Ensure HTML escaping for special characters in link text per contracts/html-format.md
 
 **Checkpoint**: User Story 2 complete - index generates as HTML with CSS, all US2 tests pass
 

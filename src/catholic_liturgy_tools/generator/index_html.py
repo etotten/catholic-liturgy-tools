@@ -1,7 +1,7 @@
 """HTML index page generation module for _site/ structure."""
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 from dataclasses import dataclass
 import re
 import html
@@ -261,6 +261,9 @@ def generate_index(
     
     return output_path
 
+
+# For backwards compatibility, import the old function names
+from typing import Optional
 
 __all__ = [
     'ReadingsEntry',
