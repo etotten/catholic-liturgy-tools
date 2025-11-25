@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
+from .constants import DEFAULT_WORKFLOW_FILE
+
 # Load environment variables from .env file if it exists
 # Skip loading if SKIP_DOTENV_LOAD is set (for testing)
 if not os.environ.get('SKIP_DOTENV_LOAD'):
@@ -323,8 +325,8 @@ def main():
     )
     trigger_parser.add_argument(
         "--workflow-file",
-        default="publish-daily-message.yml",
-        help="Workflow file to trigger (default: publish-daily-message.yml)",
+        default=DEFAULT_WORKFLOW_FILE,
+        help=f"Workflow file to trigger (default: {DEFAULT_WORKFLOW_FILE})",
     )
     trigger_parser.add_argument(
         "--branch",
