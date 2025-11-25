@@ -14,30 +14,30 @@ class TestGenerateMessageCommand:
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_calls_generator(self, mock_generate):
         """Test that command calls the generate_message function."""
-        mock_args = Mock(output_dir='_site/messages')
+        mock_args = Mock(output_dir='_site/messages', date=None)
         mock_generate.return_value = Path('_site/messages/2025-01-15-daily-message.md')
         
         result = cli.generate_message_command(mock_args)
         
-        mock_generate.assert_called_once_with(output_dir='_site/messages')
+        mock_generate.assert_called_once_with(output_dir='_site/messages', date=None)
         assert result == 0
     
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_with_custom_output_dir(self, mock_generate):
         """Test command with custom output directory."""
-        mock_args = Mock(output_dir='custom/dir')
+        mock_args = Mock(output_dir='custom/dir', date=None)
         mock_generate.return_value = Path('custom/dir/2025-01-15-daily-message.md')
         
         result = cli.generate_message_command(mock_args)
         
-        mock_generate.assert_called_once_with(output_dir='custom/dir')
+        mock_generate.assert_called_once_with(output_dir='custom/dir', date=None)
         assert result == 0
     
     @patch('builtins.print')
     @patch('catholic_liturgy_tools.generator.message.generate_message')
     def test_generate_message_command_prints_success_message(self, mock_generate, mock_print):
         """Test that command prints success message."""
-        mock_args = Mock(output_dir='_site/messages')
+        mock_args = Mock(output_dir='_site/messages', date=None)
         output_path = Path('_site/messages/2025-01-15-daily-message.md')
         mock_generate.return_value = output_path
         
@@ -161,42 +161,45 @@ class TestTriggerPublishCommand:
     @patch('catholic_liturgy_tools.github.actions.trigger_workflow')
     def test_trigger_publish_command_calls_trigger(self, mock_trigger):
         """Test that command calls the trigger_workflow function."""
-        mock_args = Mock(workflow_file='publish-content.yml', branch='main')
+        mock_args = Mock(workflow_file='publish-content.yml', branch='main', date=None)
         mock_trigger.return_value = True
         
         result = cli.trigger_publish_command(mock_args)
         
         mock_trigger.assert_called_once_with(
             workflow_file='publish-content.yml',
-            branch='main'
+            branch='main',
+            inputs=None
         )
         assert result == 0
     
     @patch('catholic_liturgy_tools.github.actions.trigger_workflow')
     def test_trigger_publish_command_with_custom_workflow(self, mock_trigger):
         """Test command with custom workflow file."""
-        mock_args = Mock(workflow_file='custom-workflow.yml', branch='main')
+        mock_args = Mock(workflow_file='custom-workflow.yml', branch='main', date=None)
         mock_trigger.return_value = True
         
         result = cli.trigger_publish_command(mock_args)
         
         mock_trigger.assert_called_once_with(
             workflow_file='custom-workflow.yml',
-            branch='main'
+            branch='main',
+            inputs=None
         )
         assert result == 0
     
     @patch('catholic_liturgy_tools.github.actions.trigger_workflow')
     def test_trigger_publish_command_with_custom_branch(self, mock_trigger):
         """Test command with custom branch."""
-        mock_args = Mock(workflow_file='publish-content.yml', branch='develop')
+        mock_args = Mock(workflow_file='publish-content.yml', branch='develop', date=None)
         mock_trigger.return_value = True
         
         result = cli.trigger_publish_command(mock_args)
         
         mock_trigger.assert_called_once_with(
             workflow_file='publish-content.yml',
-            branch='develop'
+            branch='develop',
+            inputs=None
         )
         assert result == 0
     
@@ -204,7 +207,7 @@ class TestTriggerPublishCommand:
     @patch('catholic_liturgy_tools.github.actions.trigger_workflow')
     def test_trigger_publish_command_prints_success_message(self, mock_trigger, mock_print):
         """Test that command prints success message."""
-        mock_args = Mock(workflow_file='publish-content.yml', branch='main')
+        mock_args = Mock(workflow_file='publish-content.yml', branch='main', date=None)
         mock_trigger.return_value = True
         
         cli.trigger_publish_command(mock_args)

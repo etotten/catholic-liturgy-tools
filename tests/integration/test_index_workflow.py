@@ -95,8 +95,12 @@ class TestIndexWorkflow:
             filepath = get_message_file_path(date, output_dir=str(posts_dir))
             write_file_safe(filepath, content)
         
-        # Generate initial index
-        index_path = generate_index(posts_dir=str(posts_dir), output_file=str(temp_dir / "index.md"))
+        # Generate initial index (explicitly set readings_dir to avoid picking up real readings)
+        index_path = generate_index(
+            posts_dir=str(posts_dir), 
+            readings_dir=str(temp_dir / "readings"),
+            output_file=str(temp_dir / "index.md")
+        )
         initial_content = index_path.read_text()
         
         assert "2025-11-20" in initial_content

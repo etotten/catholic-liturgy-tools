@@ -19,7 +19,9 @@ def generate_message_command(args):
     from catholic_liturgy_tools.generator.message import generate_message
     
     try:
-        result_path = generate_message(output_dir=args.output_dir)
+        # Get date from args if provided
+        date_str = getattr(args, 'date', None)
+        result_path = generate_message(output_dir=args.output_dir, date=date_str)
         print(f"Generated daily message for {result_path.stem.split('-daily-message')[0]}")
         print(f"File: {result_path}")
         return 0
@@ -148,9 +150,15 @@ def trigger_publish_command(args):  # pragma: no cover
     from catholic_liturgy_tools.github.actions import trigger_workflow, REPO_OWNER, REPO_NAME
     
     try:
+        # Prepare workflow inputs if date is specified
+        inputs = None
+        if hasattr(args, 'date') and args.date:
+            inputs = {'date': args.date}
+        
         success = trigger_workflow(
             workflow_file=args.workflow_file,
             branch=args.branch,
+            inputs=inputs,
         )
         
         if success:
@@ -268,6 +276,12 @@ def main():
         help="Generate a daily message for today's date",
     )
     generate_parser.add_argument(
+        "--date",
+        "-d",
+        default=None,
+        help="Date to generate message for in YYYY-MM-DD format (default: today)",
+    )
+    generate_parser.add_argument(
         "--output-dir",
         default="_site/messages",
         help="Output directory for message files (default: _site/messages)",
@@ -332,6 +346,10 @@ def main():
         "--branch",
         default="main",
         help="Branch to run workflow on (default: main)",
+    )
+    trigger_parser.add_argument(
+        "--date",
+        help="Date to generate content for (YYYY-MM-DD format, e.g., 2025-12-25)",
     )
     trigger_parser.set_defaults(func=trigger_publish_command)
     

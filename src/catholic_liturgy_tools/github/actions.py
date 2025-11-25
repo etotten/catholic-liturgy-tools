@@ -14,7 +14,8 @@ REPO_NAME = "catholic-liturgy-tools"
 
 def trigger_workflow(  # pragma: no cover
     workflow_file: str = DEFAULT_WORKFLOW_FILE,
-    branch: str = "main"
+    branch: str = "main",
+    inputs: Optional[dict] = None
 ) -> bool:
     """
     Trigger a GitHub Actions workflow remotely.
@@ -22,6 +23,7 @@ def trigger_workflow(  # pragma: no cover
     Args:
         workflow_file: Name of the workflow file (default: publish-content.yml)
         branch: Branch to run the workflow on (default: main)
+        inputs: Optional dictionary of workflow inputs (e.g., {'date': '2025-12-25'})
         
     Returns:
         bool: True if workflow was triggered successfully, False otherwise
@@ -33,6 +35,8 @@ def trigger_workflow(  # pragma: no cover
         >>> import os
         >>> os.environ['GITHUB_TOKEN'] = 'ghp_xxxxx'
         >>> trigger_workflow()
+        True
+        >>> trigger_workflow(inputs={'date': '2025-12-25'})
         True
     """
     # Get GitHub token from environment
@@ -57,6 +61,10 @@ def trigger_workflow(  # pragma: no cover
     payload = {
         'ref': branch,
     }
+    
+    # Add inputs if provided
+    if inputs:
+        payload['inputs'] = inputs
     
     # Make API request
     try:

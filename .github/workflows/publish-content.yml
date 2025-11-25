@@ -2,6 +2,11 @@ name: Publish Daily Content
 
 on:
   workflow_dispatch:    # Allow manual trigger from any branch
+    inputs:
+      date:
+        description: 'Date to generate content for (YYYY-MM-DD, leave empty for today)'
+        required: false
+        type: string
   push:
     branches:
       - main
@@ -41,11 +46,19 @@ jobs:
       
       - name: Generate daily message
         run: |
-          catholic-liturgy generate-message
+          if [ -n "${{ inputs.date }}" ]; then
+            catholic-liturgy generate-message --date "${{ inputs.date }}"
+          else
+            catholic-liturgy generate-message
+          fi
       
       - name: Generate daily readings
         run: |
-          catholic-liturgy generate-readings
+          if [ -n "${{ inputs.date }}" ]; then
+            catholic-liturgy generate-readings --date "${{ inputs.date }}"
+          else
+            catholic-liturgy generate-readings
+          fi
       
       - name: Generate index page
         run: |

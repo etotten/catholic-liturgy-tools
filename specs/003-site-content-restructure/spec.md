@@ -188,3 +188,29 @@ All links in generated content are updated to reflect the new `_site/` directory
 - Automated redirects from old URLs to new structure (old files will be deleted, redirects not implemented)
 - Building migration functionality into CLI (migration is one-time development task)
 
+---
+
+## Implementation Additions (Not in Original Spec)
+
+### Date Parameter Support for Content Regeneration
+
+**Added During Implementation**: November 25, 2025  
+**Reason**: Discovered need to regenerate content for specific historical dates via CLI workflow triggers
+
+**Changes Made**:
+1. GitHub Actions workflow accepts optional `date` input parameter (YYYY-MM-DD format)
+2. `trigger-publish` CLI command accepts `--date` parameter to pass to workflow
+3. `generate-message` CLI command accepts `--date` parameter for consistency with `generate-readings`
+4. All date parameters default to today's date if not specified
+
+**Rationale**:
+- Users may need to regenerate content for specific dates (e.g., fixing errors, updating content)
+- Workflow manual trigger via GitHub UI supports date input
+- CLI trigger command should support same functionality for automation
+- Feature parity: if `generate-readings` has `--date`, `generate-message` should too
+
+**Impact**:
+- **Backward Compatible**: All commands work without `--date` parameter (defaults to today)
+- **Test Coverage**: Added 5 E2E tests for new functionality
+- **Documentation**: Added to README.md with examples
+

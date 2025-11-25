@@ -62,14 +62,14 @@ cp .env.example .env
 ### 1. Generate a Daily Message
 
 ```bash
-# Generate today's message in the _posts directory
+# Generate today's message in the _site/messages directory (default)
 catholic-liturgy generate-message
 
 # Generate to a custom directory
 catholic-liturgy generate-message --output-dir custom/posts
 ```
 
-This creates a file like `_posts/2025-01-15-daily-message.md` with:
+This creates a file like `_site/messages/2025-01-15-daily-message.md` with:
 - YAML frontmatter (layout, date, title)
 - A heading with the date
 - Placeholder content for daily reflection
@@ -77,7 +77,7 @@ This creates a file like `_posts/2025-01-15-daily-message.md` with:
 ### 2. Generate Daily Readings
 
 ```bash
-# Generate today's readings in the readings directory
+# Generate today's readings in the _site/readings directory (default)
 catholic-liturgy generate-readings
 
 # Generate readings for a specific date
@@ -87,7 +87,7 @@ catholic-liturgy generate-readings --date 2025-12-25
 catholic-liturgy generate-readings --output-dir custom/readings
 ```
 
-This fetches readings from USCCB.org and creates a file like `readings/2025-01-15.html` with:
+This fetches readings from USCCB.org and creates a file like `_site/readings/2025-01-15.html` with:
 - Liturgical day name (e.g., "Second Sunday in Ordinary Time")
 - All daily readings (First Reading, Responsorial Psalm, Second Reading, Gospel)
 - Biblical citations and full text
@@ -99,18 +99,20 @@ This fetches readings from USCCB.org and creates a file like `readings/2025-01-1
 ### 3. Generate an Index Page
 
 ```bash
-# Scan _posts and readings directories, create index.md
+# Scan _site/messages and _site/readings directories, create _site/index.html
 catholic-liturgy generate-index
 
 # Use custom paths
-catholic-liturgy generate-index --posts-dir custom/posts --readings-dir custom/readings --output-file custom-index.md
+catholic-liturgy generate-index --posts-dir custom/posts --readings-dir custom/readings --output-file custom-index.html
 ```
 
-The index page includes:
-- YAML frontmatter with "Daily Messages" title
+The index page is an HTML file with inline CSS that includes:
+- HTML5 document structure with responsive styling
+- "Catholic Liturgy Tools" heading
 - Two sections:
   - **Daily Messages**: Links to all message files in reverse chronological order
-  - **Daily Readings**: Links to all readings files in reverse chronological order
+  - **Daily Readings**: Links to all readings files (with liturgical day titles) in reverse chronological order
+- Clean, readable typography with no external dependencies
 
 ### 4. Check GitHub Pages Status
 
@@ -146,27 +148,29 @@ catholic-liturgy trigger-publish --workflow-file custom-workflow.yml --branch de
 2. Navigate to **Pages** section
 3. Set source to **GitHub Actions**
 
-### 2. Configure Jekyll
+### 2. Site Structure
 
-The repository includes a `_config.yml` file with minimal Jekyll configuration:
+The tool generates a static site in the `_site/` directory:
 
-```yaml
-theme: minima
-title: Daily Catholic Messages
-description: Daily reflections and messages
-exclude:
-  - src/
-  - tests/
 ```
+_site/
+├── index.html          # Main index with inline CSS
+├── messages/           # Daily message files
+│   └── YYYY-MM-DD-daily-message.md
+└── readings/           # Daily readings HTML files
+    └── YYYY-MM-DD.html
+```
+
+All files are standalone HTML with inline CSS - no external dependencies or build tools required.
 
 ### 3. Set Up GitHub Actions
 
-The repository includes a workflow file at `.github/workflows/publish-daily-message.yml` that:
+The repository includes a workflow file at `.github/workflows/publish-content.yml` that:
 - Runs daily at 6 AM Central Time (noon UTC) via cron schedule
 - Can be manually triggered via `workflow_dispatch`
-- Generates a new daily message
+- Generates daily message and readings
 - Updates the index page
-- Commits and pushes changes to trigger GitHub Pages deployment
+- Deploys the `_site/` directory directly to GitHub Pages using artifact-based deployment
 
 **Important**: The workflow uses the `github-pages` environment for deployment. If you want to deploy from branches other than `main`:
 
@@ -217,15 +221,26 @@ source ~/.zshrc
 Generate a daily message markdown file.
 
 ```bash
-catholic-liturgy generate-message [--output-dir DIR]
+catholic-liturgy generate-message [--date DATE] [--output-dir DIR]
 ```
 
 **Options:**
+- `--date`, `-d`: Date to generate message for in YYYY-MM-DD format (default: today)
 - `--output-dir`, `-o`: Directory for output (default: `_posts`)
 
-**Example:**
+**Examples:**
 ```bash
+# Generate today's message
+catholic-liturgy generate-message
+
+# Generate message for a specific date
+catholic-liturgy generate-message --date 2025-12-25
+
+# Custom output directory
 catholic-liturgy generate-message --output-dir docs/_posts
+
+# Both date and custom directory
+catholic-liturgy generate-message -d 2025-12-25 -o custom/posts
 ```
 
 ---
@@ -338,20 +353,39 @@ catholic-liturgy check-pages
 Trigger a GitHub Actions workflow to publish content.
 
 ```bash
-catholic-liturgy trigger-publish [--workflow-file FILE] [--branch BRANCH]
+catholic-liturgy trigger-publish [--date DATE] [--workflow-file FILE] [--branch BRANCH]
 ```
 
 **Options:**
-- `--workflow-file`: Workflow filename (default: `publish-daily-message.yml`)
+- `--date`, `-d`: Date to generate content for in YYYY-MM-DD format (default: today)
+- `--workflow-file`: Workflow filename (default: `publish-content.yml`)
 - `--branch`: Branch to run workflow on (default: `main`)
 
 **Requirements:**
 - `GITHUB_TOKEN` environment variable must be set
 
-**Example:**
+**Examples:**
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here
-catholic-liturgy trigger-publish --branch main
+
+# Trigger today's content generation
+catholic-liturgy trigger-publish
+
+# Regenerate content for a specific date
+catholic-liturgy trigger-publish --date 2025-12-25
+
+# Trigger on a specific branch with custom date
+catholic-liturgy trigger-publish --date 2025-11-20 --branch 003-site-content-restructure-finish
+
+# Short options
+catholic-liturgy trigger-publish -d 2025-12-01
+```
+
+**Use Case - Regenerating Historical Content:**
+If you need to fix or regenerate content for a specific date (e.g., correcting an error or updating formatting), use the `--date` parameter:
+```bash
+# Regenerate Christmas Day content
+catholic-liturgy trigger-publish --date 2025-12-25
 ```
 
 ## Development

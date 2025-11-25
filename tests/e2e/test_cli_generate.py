@@ -97,6 +97,56 @@ class TestGenerateMessageCLI:
         assert "error" not in result.stdout.lower()
         assert "error" not in result.stderr.lower()
     
+    def test_generate_message_with_custom_date(self, temp_dir, monkeypatch):
+        """Test that generate-message works with --date parameter."""
+        monkeypatch.chdir(temp_dir)
+        
+        custom_date = "2025-12-25"
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", "generate-message", "--date", custom_date],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "Generated daily message" in result.stdout
+        assert custom_date in result.stdout
+        
+        # Verify file was created with custom date
+        expected_file = temp_dir / "_site" / "messages" / f"{custom_date}-daily-message.md"
+        assert expected_file.exists()
+        
+        content = expected_file.read_text()
+        assert "Hello Catholic World" in content
+        assert custom_date in content
+    
+    def test_generate_message_with_custom_output_dir_and_date(self, temp_dir, monkeypatch):
+        """Test that generate-message works with both --output-dir and --date."""
+        monkeypatch.chdir(temp_dir)
+        
+        custom_date = "2025-11-20"
+        custom_dir = temp_dir / "custom_messages"
+        
+        result = subprocess.run(
+            [
+                sys.executable, "-m", "catholic_liturgy_tools.cli", "generate-message",
+                "--date", custom_date,
+                "--output-dir", str(custom_dir)
+            ],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        
+        # Verify file was created in custom directory
+        expected_file = custom_dir / f"{custom_date}-daily-message.md"
+        assert expected_file.exists()
+        
+        content = expected_file.read_text()
+        assert "Hello Catholic World" in content
+        assert custom_date in content
+    
     def test_cli_help_shows_generate_message(self):
         """Test that CLI help shows generate-message command."""
         result = subprocess.run(
@@ -107,3 +157,15 @@ class TestGenerateMessageCLI:
         
         assert result.returncode == 0
         assert "generate-message" in result.stdout
+    
+    def test_generate_message_help_shows_date_option(self):
+        """Test that generate-message help shows --date option."""
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", "generate-message", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "--date" in result.stdout
+        assert "YYYY-MM-DD" in result.stdout
