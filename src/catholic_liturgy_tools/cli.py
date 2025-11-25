@@ -19,7 +19,9 @@ def generate_message_command(args):
     from catholic_liturgy_tools.generator.message import generate_message
     
     try:
-        result_path = generate_message(output_dir=args.output_dir)
+        # Get date from args if provided
+        date_str = getattr(args, 'date', None)
+        result_path = generate_message(output_dir=args.output_dir, date=date_str)
         print(f"Generated daily message for {result_path.stem.split('-daily-message')[0]}")
         print(f"File: {result_path}")
         return 0
@@ -272,6 +274,12 @@ def main():
     generate_parser = subparsers.add_parser(
         "generate-message",
         help="Generate a daily message for today's date",
+    )
+    generate_parser.add_argument(
+        "--date",
+        "-d",
+        default=None,
+        help="Date to generate message for in YYYY-MM-DD format (default: today)",
     )
     generate_parser.add_argument(
         "--output-dir",

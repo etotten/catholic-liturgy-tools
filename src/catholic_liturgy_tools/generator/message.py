@@ -53,16 +53,17 @@ def get_message_file_path(date: str, output_dir: str = "_site/messages") -> Path
     return Path(output_dir) / filename
 
 
-def generate_message(output_dir: str = "_site/messages") -> Path:
+def generate_message(output_dir: str = "_site/messages", date: str = None) -> Path:
     """
-    Generate a daily message for today's date.
+    Generate a daily message for the specified date or today's date.
     
     This is the main entry point for message generation. It creates a markdown file
-    with today's date and the greeting "Hello Catholic World" in the specified
-    output directory.
+    with the specified date (or today's date) and the greeting "Hello Catholic World"
+    in the specified output directory.
     
     Args:
         output_dir: Output directory (default: _site/messages)
+        date: Date string in YYYY-MM-DD format (default: today)
         
     Returns:
         Path: Path to the generated message file
@@ -74,10 +75,14 @@ def generate_message(output_dir: str = "_site/messages") -> Path:
         >>> path = generate_message()
         >>> path.exists()
         True
+        >>> path = generate_message(date="2025-12-25")
+        >>> "2025-12-25" in str(path)
+        True
     """
-    today = get_today()
-    content = generate_message_content(today)
-    filepath = get_message_file_path(today, output_dir=output_dir)
+    # Use provided date or default to today
+    date_str = date if date else get_today()
+    content = generate_message_content(date_str)
+    filepath = get_message_file_path(date_str, output_dir=output_dir)
     
     # Write file (this will create the directory if needed)
     write_file_safe(filepath, content)
