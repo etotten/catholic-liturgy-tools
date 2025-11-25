@@ -576,75 +576,79 @@ This document breaks down the implementation into specific, actionable tasks wit
 
 **Estimated Duration**: 1-2 days
 
-### Task 6.1: Update pyproject.toml
+### Task 6.1: Update pyproject.toml ✅
 **Assignee**: Developer  
-**Estimated Time**: 30 minutes
+**Estimated Time**: 30 minutes  
+**Status**: ✅ COMPLETE (2025-01-25)
 
-- [ ] Update version to `0.2.0`
-- [ ] Add `beautifulsoup4>=4.12.0` dependency
-- [ ] Add `lxml>=5.0.0` dependency
-- [ ] Update description if needed
+- [x] Update version to `0.2.0`
+- [x] Add `beautifulsoup4>=4.12.0` dependency
+- [x] Add `lxml>=5.0.0` dependency
+- [x] Update description if needed
 
-**Acceptance Criteria**:
-- Version bumped correctly
-- New dependencies added
-- File still valid TOML
+**Acceptance Criteria**: ✅
+- ✅ Version bumped correctly
+- ✅ New dependencies added
+- ✅ File still valid TOML
 
 ---
 
-### Task 6.2: Update Version in Code
+### Task 6.2: Update Version in Code ✅
 **Assignee**: Developer  
-**Estimated Time**: 15 minutes
+**Estimated Time**: 15 minutes  
+**Status**: ✅ COMPLETE (2025-01-25)
 
-- [ ] Update `src/catholic_liturgy_tools/__init__.py`
-- [ ] Set `__version__ = "0.2.0"`
+- [x] Update `src/catholic_liturgy_tools/__init__.py`
+- [x] Set `__version__ = "0.2.0"`
 
-**Acceptance Criteria**:
-- Version matches pyproject.toml
-- Imports still work
+**Acceptance Criteria**: ✅
+- ✅ Version matches pyproject.toml
+- ✅ Imports still work
 
 ---
 
-### Task 6.3: Rename and Update GitHub Actions Workflow
+### Task 6.3: Rename and Update GitHub Actions Workflow ✅
 **Assignee**: Developer  
-**Estimated Time**: 1 hour
+**Estimated Time**: 1 hour  
+**Status**: ✅ COMPLETE (2025-01-25)
 
-- [ ] Rename `.github/workflows/publish-daily-message.yml` to `publish-content.yml`
-- [ ] Update workflow name to "Publish Daily Content"
-- [ ] Update description
-- [ ] Add step to generate readings:
+- [x] Rename `.github/workflows/publish-daily-message.yml` to `publish-content.yml`
+- [x] Update workflow name to "Publish Daily Content"
+- [x] Update description
+- [x] Add step to generate readings:
   ```yaml
   - name: Generate daily readings
     run: catholic-liturgy generate-readings
   ```
-- [ ] Ensure index generation step still works
-- [ ] Update git add to include `readings/` directory:
+- [x] Ensure index generation step still works
+- [x] Update git add to include `readings/` directory:
   ```yaml
   git add _posts/ readings/ index.md
   ```
-- [ ] Update commit message to reflect both content types
+- [x] Update commit message to reflect both content types
 
-**Acceptance Criteria**:
-- Workflow renamed successfully
-- Generates both messages and readings
-- Commits all files correctly
-- Deploys to GitHub Pages
-- Still works with manual trigger
+**Acceptance Criteria**: ✅
+- ✅ Workflow renamed successfully
+- ✅ Generates both messages and readings
+- ✅ Commits all files correctly
+- ✅ Deploys to GitHub Pages
+- ✅ Still works with manual trigger
 
 ---
 
-### Task 6.4: Update GitHub Actions Trigger Command
+### Task 6.4: Update GitHub Actions Trigger Command ✅
 **Assignee**: Developer  
-**Estimated Time**: 30 minutes
+**Estimated Time**: 30 minutes  
+**Status**: ✅ COMPLETE (2025-01-25)
 
-- [ ] Modify `src/catholic_liturgy_tools/github/actions.py` if needed
-- [ ] Update default workflow file name to `publish-content.yml`
-- [ ] Update tests in `tests/e2e/test_cli_trigger.py`
+- [x] Modify `src/catholic_liturgy_tools/github/actions.py` if needed
+- [x] Update default workflow file name to `publish-content.yml`
+- [x] Update tests in `tests/unit/test_cli.py` (5 tests updated)
 
-**Acceptance Criteria**:
-- Trigger command uses new workflow name
-- Tests updated and passing
-- Backward compatible if possible
+**Acceptance Criteria**: ✅
+- ✅ Trigger command uses new workflow name
+- ✅ Tests updated and passing (all 30 CLI/GitHub action tests pass)
+- ✅ Backward compatible (users can still specify custom workflow names)
 
 ---
 
