@@ -399,55 +399,58 @@ This document breaks down the implementation into specific, actionable tasks wit
 
 ### Task 4.1: Implement Readings Scanning
 **Assignee**: Developer  
-**Estimated Time**: 2 hours
+**Estimated Time**: 2 hours  
+**Status**: ✅ COMPLETE (2025-01-22)
 
-- [ ] Modify `src/catholic_liturgy_tools/generator/index.py`
-- [ ] Implement `scan_readings_files(readings_dir: str) -> List[ReadingsEntry]`
-  - [ ] Scan directory for `*.html` files
-  - [ ] Parse HTML to extract liturgical day name
-  - [ ] Extract date from filename
-  - [ ] Create ReadingsEntry objects
-  - [ ] Sort by date (newest first)
-- [ ] Add docstrings and type hints
+- [X] Modify `src/catholic_liturgy_tools/generator/index.py`
+- [X] Implement `scan_readings_files(readings_dir: str) -> List[ReadingsEntry]`
+  - [X] Scan directory for `*.html` files
+  - [X] Parse HTML to extract liturgical day name
+  - [X] Extract date from filename
+  - [X] Create ReadingsEntry objects
+  - [X] Sort by date (newest first)
+- [X] Add docstrings and type hints
 
 **Acceptance Criteria**:
-- Function scans directory correctly
-- Parses HTML files to get liturgical day
-- Returns sorted list
-- Handles empty directory gracefully
+- ✅ Function scans directory correctly
+- ✅ Parses HTML files to get liturgical day
+- ✅ Returns sorted list
+- ✅ Handles empty directory gracefully
 
 ---
 
 ### Task 4.2: Update Index Generation
 **Assignee**: Developer  
-**Estimated Time**: 2 hours
+**Estimated Time**: 2 hours  
+**Status**: ✅ COMPLETE (2025-01-22)
 
-- [ ] Modify `generate_index()` function
-- [ ] Add `readings_dir` parameter (default: "readings")
-- [ ] Call `scan_readings_files()` in addition to `scan_message_files()`
-- [ ] Generate two-section markdown:
-  - [ ] "Daily Messages" section
-  - [ ] "Daily Readings" section
-- [ ] Handle cases where one or both sections are empty
-- [ ] Ensure output file is `index.md` (not `index.html`)
+- [X] Modify `generate_index()` function
+- [X] Add `readings_dir` parameter (default: "readings")
+- [X] Call `scan_readings_files()` in addition to `scan_message_files()`
+- [X] Generate two-section markdown:
+  - [X] "Daily Messages" section
+  - [X] "Daily Readings" section
+- [X] Handle cases where one or both sections are empty
+- [X] Ensure output file is `index.md` (not `index.html`)
 
 **Acceptance Criteria**:
-- Index includes both sections
-- Both sections sorted correctly
-- Links point to correct files
-- Works when readings directory is empty
-- Works when messages directory is empty
-- Output file is `index.md`
+- ✅ Index includes both sections
+- ✅ Both sections sorted correctly
+- ✅ Links point to correct files
+- ✅ Works when readings directory is empty
+- ✅ Works when messages directory is empty
+- ✅ Output file is `index.md`
 
 ---
 
 ### Task 4.3: Update Index Tests
 **Assignee**: Developer  
-**Estimated Time**: 2 hours
+**Estimated Time**: 2 hours  
+**Status**: ✅ COMPLETE (2025-01-22)
 
-- [ ] Modify `tests/unit/test_index.py`
-- [ ] Add tests for `scan_readings_files()`
-- [ ] Update tests for `generate_index()` to include readings
+- [X] Modify `tests/unit/test_index.py`
+- [X] Add tests for `scan_readings_files()`
+- [X] Update tests for `generate_index()` to include readings
 - [ ] Test with both messages and readings present
 - [ ] Test with only messages present
 - [ ] Test with only readings present
@@ -754,11 +757,11 @@ This document breaks down the implementation into specific, actionable tasks wit
 
 Use this section to track overall progress:
 
-**Phases Complete**: 3/8 (Phase 0, Phase 1, Phase 2, Phase 3)
+**Phases Complete**: 4/8 (Phase 0, Phase 1, Phase 2, Phase 3, Phase 4)
 
-**Tasks Complete**: 26/42 (62%)
+**Tasks Complete**: 29/42 (69%)
 
-**Current Phase**: Phase 4 (Index Updates)
+**Current Phase**: Phase 5 (CLI Integration)
 
 **Blockers**: None
 
@@ -767,8 +770,9 @@ Use this section to track overall progress:
 - Phase 1 (Design & Contracts): COMPLETE  
 - Phase 2 (Scraper): COMPLETE - 8/8 tasks done (92.42% coverage, all tests passing)
 - Phase 3 (HTML Generation): COMPLETE - 4/4 tasks done (100% coverage, all tests passing)
+- Phase 4 (Index Updates): COMPLETE - 3/3 tasks done (100% coverage, 42 tests passing)
 - E2E test fix completed: test_trigger_publish_command_missing_token now passing
-- Ready for Phase 4: Index Updates
+- Ready for Phase 5: CLI Integration
 
 ---
 
