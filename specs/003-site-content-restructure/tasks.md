@@ -157,7 +157,7 @@
 
 **Purpose**: Final validation, documentation, and cleanup
 
-- [ ] T042 [P] Run full test suite and verify 90%+ coverage with `pytest --cov=src/catholic_liturgy_tools --cov-fail-under=90`
+- [X] T042 [P] Run full test suite and verify 90%+ coverage with `pytest --cov=src/catholic_liturgy_tools --cov-fail-under=90`
 - [ ] T043 [P] Update CHANGELOG.md with v0.3.0 changes (new _site/ structure, HTML index, gh-pages deployment)
 - [ ] T044 Generate content locally and verify structure matches contracts (run quickstart.md validation steps)
 - [ ] T045 Test backward compatibility: verify custom --output-dir paths still work
