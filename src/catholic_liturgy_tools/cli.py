@@ -148,9 +148,15 @@ def trigger_publish_command(args):  # pragma: no cover
     from catholic_liturgy_tools.github.actions import trigger_workflow, REPO_OWNER, REPO_NAME
     
     try:
+        # Prepare workflow inputs if date is specified
+        inputs = None
+        if hasattr(args, 'date') and args.date:
+            inputs = {'date': args.date}
+        
         success = trigger_workflow(
             workflow_file=args.workflow_file,
             branch=args.branch,
+            inputs=inputs,
         )
         
         if success:
@@ -332,6 +338,10 @@ def main():
         "--branch",
         default="main",
         help="Branch to run workflow on (default: main)",
+    )
+    trigger_parser.add_argument(
+        "--date",
+        help="Date to generate content for (YYYY-MM-DD format, e.g., 2025-12-25)",
     )
     trigger_parser.set_defaults(func=trigger_publish_command)
     

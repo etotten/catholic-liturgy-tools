@@ -46,16 +46,16 @@ jobs:
       
       - name: Generate daily message
         run: |
-          if [ -n "${{ github.event.inputs.date }}" ]; then
-            catholic-liturgy generate-message --date "${{ github.event.inputs.date }}"
+          if [ -n "${{ inputs.date }}" ]; then
+            catholic-liturgy generate-message --date "${{ inputs.date }}"
           else
             catholic-liturgy generate-message
           fi
       
       - name: Generate daily readings
         run: |
-          if [ -n "${{ github.event.inputs.date }}" ]; then
-            catholic-liturgy generate-readings --date "${{ github.event.inputs.date }}"
+          if [ -n "${{ inputs.date }}" ]; then
+            catholic-liturgy generate-readings --date "${{ inputs.date }}"
           else
             catholic-liturgy generate-readings
           fi
