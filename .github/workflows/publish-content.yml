@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write  # Required to push to gh-pages branch
+  pages: write     # Required for GitHub Pages deployment
+  id-token: write  # Required for GitHub Pages deployment
 
 jobs:
   generate-and-deploy:
