@@ -37,7 +37,8 @@ class TestRetryWithBackoff:
         assert result == "success"
         assert mock_func.call_count == 1
     
-    def test_successful_after_retry(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_successful_after_retry(self, mock_sleep):
         """Test that function succeeds after retrying once."""
         mock_func = Mock(side_effect=[CustomError("fail"), "success"])
         
@@ -50,7 +51,8 @@ class TestRetryWithBackoff:
         assert result == "success"
         assert mock_func.call_count == 2
     
-    def test_max_attempts_reached(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_max_attempts_reached(self, mock_sleep):
         """Test that exception is raised after max attempts."""
         mock_func = Mock(side_effect=CustomError("persistent failure"))
         
@@ -64,7 +66,8 @@ class TestRetryWithBackoff:
         assert str(exc_info.value) == "persistent failure"
         assert mock_func.call_count == 3
     
-    def test_exponential_backoff_delays(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_exponential_backoff_delays(self, mock_sleep):
         """Test that delays follow exponential backoff pattern."""
         mock_func = Mock(side_effect=[CustomError("1"), CustomError("2"), "success"])
         
@@ -72,13 +75,12 @@ class TestRetryWithBackoff:
         def test_func():
             return mock_func()
         
-        start_time = time.time()
         result = test_func()
-        elapsed_time = time.time() - start_time
         
-        # Expected delays: 2^0 = 1s, 2^1 = 2s, total ~3s
-        # Using 2.5s as minimum to account for test execution time
-        assert elapsed_time >= 2.5
+        # Verify exponential backoff: 2^0 = 1s, 2^1 = 2s
+        assert mock_sleep.call_count == 2
+        mock_sleep.assert_any_call(1.0)  # 2^0
+        mock_sleep.assert_any_call(2.0)  # 2^1
         assert result == "success"
         assert mock_func.call_count == 3
     
@@ -134,13 +136,14 @@ class TestRetryWithBackoff:
         # Should fail immediately without retry
         assert mock_func.call_count == 1
     
-    def test_multiple_exception_types(self):
-        """Test retrying on multiple exception types."""
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_multiple_exception_types(self, mock_sleep):
+        """Test that multiple exception types can be caught."""
         mock_func = Mock(side_effect=[CustomError("1"), AnotherError("2"), "success"])
         
         @retry_with_backoff(
-            max_attempts=3, 
-            backoff_factor=0.01, 
+            max_attempts=3,
+            backoff_factor=0.01,
             exceptions=(CustomError, AnotherError)
         )
         def test_func():
@@ -151,9 +154,10 @@ class TestRetryWithBackoff:
         assert result == "success"
         assert mock_func.call_count == 3
     
-    def test_default_exception_catches_all(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_default_exception_catches_all(self, mock_sleep):
         """Test that default exception tuple catches all exceptions."""
-        mock_func = Mock(side_effect=[ValueError("1"), TypeError("2"), "success"])
+        mock_func = Mock(side_effect=[ValueError("value error"), KeyError("key error"), "success"])
         
         @retry_with_backoff(max_attempts=3, backoff_factor=0.01)
         def test_func():
@@ -187,8 +191,9 @@ class TestRetryWithBackoff:
         assert test_func.__name__ == "test_func"
         assert test_func.__doc__ == "Test function docstring."
     
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
     @patch('catholic_liturgy_tools.utils.retry.logger')
-    def test_logging_on_retry(self, mock_logger):
+    def test_logging_on_retry(self, mock_logger, mock_sleep):
         """Test that retry attempts are logged."""
         mock_func = Mock(side_effect=[CustomError("fail"), "success"])
         
@@ -204,8 +209,9 @@ class TestRetryWithBackoff:
         assert "failed on attempt 1/3" in warning_message.lower()
         assert "retrying" in warning_message.lower()
     
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
     @patch('catholic_liturgy_tools.utils.retry.logger')
-    def test_logging_on_success_after_retry(self, mock_logger):
+    def test_logging_on_success_after_retry(self, mock_logger, mock_sleep):
         """Test that success after retry is logged."""
         mock_func = Mock(side_effect=[CustomError("fail"), "success"])
         
@@ -220,8 +226,9 @@ class TestRetryWithBackoff:
         info_message = mock_logger.info.call_args[0][0]
         assert "succeeded on attempt 2/3" in info_message.lower()
     
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
     @patch('catholic_liturgy_tools.utils.retry.logger')
-    def test_logging_on_final_failure(self, mock_logger):
+    def test_logging_on_final_failure(self, mock_logger, mock_sleep):
         """Test that final failure is logged as error."""
         mock_func = Mock(side_effect=CustomError("persistent"))
         

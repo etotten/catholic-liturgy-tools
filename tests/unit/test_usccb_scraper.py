@@ -275,19 +275,21 @@ class TestFetchPage:
             assert soup is not None
             assert soup.find("body") is not None
 
-    def test_fetch_page_network_error(self, scraper):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_fetch_page_network_error(self, mock_sleep, scraper):
         """Test network error raises NetworkError."""
         with patch.object(
             scraper._session,
             "get",
-            side_effect=requests.RequestException("Connection failed"),
+            side_effect=requests.ConnectionError("Connection failed"),
         ):
             with pytest.raises(NetworkError) as exc_info:
                 scraper._fetch_page("https://example.com/test")
             
             assert "Connection failed" in str(exc_info.value)
 
-    def test_fetch_page_timeout(self, scraper):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_fetch_page_timeout(self, mock_sleep, scraper):
         """Test timeout raises NetworkError."""
         with patch.object(
             scraper._session,
@@ -299,7 +301,8 @@ class TestFetchPage:
             
             assert "timed out" in str(exc_info.value).lower()
 
-    def test_fetch_page_http_error(self, scraper):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_fetch_page_http_error(self, mock_sleep, scraper):
         """Test HTTP error (404, 500, etc.) raises NetworkError."""
         mock_response = Mock()
         mock_response.status_code = 404
@@ -314,7 +317,7 @@ class TestFetchPage:
             
             assert exc_info.value.status_code == 404
 
-    @patch("time.sleep")  # Mock sleep to speed up test
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
     def test_fetch_page_retry_success(self, mock_sleep, scraper):
         """Test retry decorator retries on failure then succeeds."""
         mock_response = Mock()
@@ -336,7 +339,7 @@ class TestFetchPage:
             assert soup is not None
             assert mock_get.call_count == 3
 
-    @patch("time.sleep")
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
     def test_fetch_page_retry_exhausted(self, mock_sleep, scraper):
         """Test retry decorator raises after max attempts."""
         with patch.object(
@@ -381,7 +384,8 @@ class TestGetReadingsForDate:
             with pytest.raises(ParseError):
                 scraper.get_readings_for_date(test_date)
 
-    def test_get_readings_network_error_propagates(self, scraper):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_get_readings_network_error_propagates(self, mock_sleep, scraper):
         """Test that network errors propagate from get_readings_for_date."""
         test_date = date(2025, 11, 22)
         
@@ -458,7 +462,8 @@ class TestScraperEdgeCases:
 class TestAdditionalCoverage:
     """Additional tests to increase coverage."""
 
-    def test_fetch_page_connection_error(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_fetch_page_connection_error(self, mock_sleep):
         """Test connection error raises NetworkError."""
         scraper = USCCBReadingsScraper()
         with patch.object(
@@ -472,7 +477,8 @@ class TestAdditionalCoverage:
             assert "Connection error" in str(exc_info.value)
             assert exc_info.value.url == "https://example.com/test"
 
-    def test_fetch_page_unexpected_error(self):
+    @patch('catholic_liturgy_tools.utils.retry.time.sleep')
+    def test_fetch_page_unexpected_error(self, mock_sleep):
         """Test unexpected error raises NetworkError."""
         scraper = USCCBReadingsScraper()
         with patch.object(
