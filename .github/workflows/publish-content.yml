@@ -1,7 +1,11 @@
 name: Publish Daily Content
 
 on:
-  workflow_dispatch:    # Allow manual trigger
+  workflow_dispatch:    # Allow manual trigger from any branch
+  push:
+    branches:
+      - main
+      - '003-*'         # Allow deployment from feature branches for testing
   schedule:
     - cron: '0 12 * * *'  # Run daily at 6 AM Central Time (noon UTC)
 
