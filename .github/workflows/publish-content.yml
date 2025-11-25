@@ -6,13 +6,21 @@ on:
     - cron: '0 12 * * *'  # Run daily at 6 AM Central Time (noon UTC)
 
 permissions:
-  contents: write  # Required to push to gh-pages branch
-  pages: write     # Required for GitHub Pages deployment
-  id-token: write  # Required for GitHub Pages deployment
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   generate-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Checkout repository
@@ -39,9 +47,14 @@ jobs:
         run: |
           catholic-liturgy generate-index
       
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          force_orphan: true
+          path: './_site'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
