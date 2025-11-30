@@ -1,0 +1,288 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-30",
+  "sources": [
+    {
+      "name": "USCCB",
+      "base_url": "https://www.usccb.org"
+    },
+    {
+      "name": "Vatican",
+      "base_url": "https://www.vatican.va"
+    },
+    {
+      "name": "CatholicOnline",
+      "base_url": "https://www.catholic.org"
+    },
+    {
+      "name": "EWTN",
+      "base_url": "https://www.ewtn.com"
+    },
+    {
+      "name": "LoyolaPress",
+      "base_url": "https://www.loyolapress.com"
+    }
+  ],
+  "prayers": [
+    {
+      "id": "anima-christi",
+      "title": "Anima Christi (Soul of Christ)",
+      "text": "Soul of Christ, sanctify me.\nBody of Christ, save me.\nBlood of Christ, inebriate me.\nWater from the side of Christ, wash me.\nPassion of Christ, strengthen me.\nO Good Jesus, hear me.\nWithin your wounds hide me.\nPermit me not to be separated from you.\nFrom the wicked foe, defend me.\nAt the hour of my death, call me\nand bid me come to you\nthat with your saints I may praise you\nfor ever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/anima-christi-soul-christ",
+      "liturgical_contexts": ["all", "ordinary"],
+      "tags": ["traditional", "eucharistic"],
+      "language": "en"
+    },
+    {
+      "id": "prayer-st-francis",
+      "title": "Prayer of St. Francis",
+      "text": "Lord, make me an instrument of your peace:\nwhere there is hatred, let me sow love;\nwhere there is injury, pardon;\nwhere there is doubt, faith;\nwhere there is despair, hope;\nwhere there is darkness, light;\nwhere there is sadness, joy.\n\nO divine Master, grant that I may not so much seek\nto be consoled as to console,\nto be understood as to understand,\nto be loved as to love.\nFor it is in giving that we receive,\nit is in pardoning that we are pardoned,\nand it is in dying that we are born to eternal life.\nAmen.",
+      "source": "Vatican",
+      "source_url": "https://www.vatican.va/special/rosary/documents/peace_en.html",
+      "liturgical_contexts": ["all", "saint", "ordinary"],
+      "tags": ["traditional", "peace", "franciscan"],
+      "language": "en"
+    },
+    {
+      "id": "prayer-before-scripture",
+      "title": "Prayer Before Reading Scripture",
+      "text": "Come, Holy Spirit, fill the hearts of your faithful\nand kindle in them the fire of your love.\nSend forth your Spirit and they shall be created.\nAnd You shall renew the face of the earth.\n\nO God, who by the light of the Holy Spirit,\ndid instruct the hearts of the faithful,\ngrant that by the same Holy Spirit\nwe may be truly wise and ever enjoy His consolations.\nThrough Christ Our Lord. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/prayer-bible-study",
+      "liturgical_contexts": ["all", "weekday", "sunday"],
+      "tags": ["scripture-based", "holy-spirit"],
+      "language": "en"
+    },
+    {
+      "id": "act-spiritual-communion",
+      "title": "Act of Spiritual Communion",
+      "text": "My Jesus, I believe that You are present in the Most Holy Sacrament.\nI love You above all things, and I desire to receive You into my soul.\nSince I cannot at this moment receive You sacramentally,\ncome at least spiritually into my heart.\nI embrace You as if You were already there\nand unite myself wholly to You.\nNever permit me to be separated from You. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/act-spiritual-communion",
+      "liturgical_contexts": ["all", "ordinary", "weekday"],
+      "tags": ["eucharistic", "spiritual"],
+      "language": "en"
+    },
+    {
+      "id": "prayer-abandonment-de-foucauld",
+      "title": "Prayer of Abandonment by Charles de Foucauld",
+      "text": "Father, I abandon myself into your hands;\ndo with me what you will.\nWhatever you may do, I thank you:\nI am ready for all, I accept all.\nLet only your will be done in me,\nand in all your creatures.\nI wish no more than this, O Lord.\nInto your hands I commend my soul;\nI offer it to you with all the love of my heart,\nfor I love you, Lord, and so need to give myself,\nto surrender myself into your hands without reserve,\nand with boundless confidence,\nfor you are my Father. Amen.",
+      "source": "Vatican",
+      "source_url": "https://www.vatican.va/spirit/documents/spirit_20010807_de-foucauld_en.html",
+      "liturgical_contexts": ["all", "ordinary"],
+      "tags": ["contemporary", "trust", "surrender"],
+      "language": "en"
+    },
+    {
+      "id": "advent-collect-first-sunday",
+      "title": "Advent Prayer for Vigilance",
+      "text": "Grant your faithful, we pray, almighty God,\nthe resolve to run forth to meet your Christ\nwith righteous deeds at his coming,\nso that, gathered at his right hand,\nthey may be worthy to possess the heavenly Kingdom.\nThrough our Lord Jesus Christ, your Son,\nwho lives and reigns with you in the unity of the Holy Spirit,\none God, for ever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/advent-prayers",
+      "liturgical_contexts": ["advent", "sunday"],
+      "tags": ["seasonal", "preparation"],
+      "language": "en"
+    },
+    {
+      "id": "o-antiphon-wisdom",
+      "title": "O Wisdom (O Sapientia)",
+      "text": "O Wisdom, coming forth from the mouth of the Most High,\nreaching from one end to the other mightily,\nand sweetly ordering all things:\nCome and teach us the way of prudence. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/o-antiphons",
+      "liturgical_contexts": ["advent", "weekday"],
+      "tags": ["traditional", "o-antiphons"],
+      "language": "en"
+    },
+    {
+      "id": "christmas-angelus",
+      "title": "Christmas Prayer of the Incarnation",
+      "text": "O God, who wonderfully created the dignity of human nature\nand still more wonderfully restored it,\ngrant, we pray,\nthat we may share in the divinity of Christ,\nwho humbled himself to share in our humanity.\nWho lives and reigns with you in the unity of the Holy Spirit,\none God, for ever and ever. Amen.",
+      "source": "Vatican",
+      "source_url": "https://www.vatican.va/content/vatican/en/prayers.html",
+      "liturgical_contexts": ["christmas", "solemnity"],
+      "tags": ["seasonal", "incarnation"],
+      "language": "en"
+    },
+    {
+      "id": "epiphany-collect",
+      "title": "Prayer for the Epiphany",
+      "text": "O God, who on this day\nrevealed your Only Begotten Son to the nations\nby the guidance of a star,\ngrant in your mercy\nthat we, who know you already by faith,\nmay be brought to behold the beauty of your sublime glory.\nThrough our Lord Jesus Christ, your Son,\nwho lives and reigns with you in the unity of the Holy Spirit,\none God, for ever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/epiphany-prayers",
+      "liturgical_contexts": ["christmas", "solemnity"],
+      "tags": ["seasonal", "epiphany"],
+      "language": "en"
+    },
+    {
+      "id": "ash-wednesday-collect",
+      "title": "Prayer for Ash Wednesday",
+      "text": "Grant, O Lord, that we may begin with holy fasting\nthis campaign of Christian service,\nso that, as we take up battle against spiritual evils,\nwe may be armed with weapons of self-restraint.\nThrough our Lord Jesus Christ, your Son,\nwho lives and reigns with you in the unity of the Holy Spirit,\none God, for ever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/lent-prayers",
+      "liturgical_contexts": ["lent", "weekday"],
+      "tags": ["seasonal", "fasting", "penance"],
+      "language": "en"
+    },
+    {
+      "id": "lenten-prayer-st-ephrem",
+      "title": "Lenten Prayer of St. Ephrem the Syrian",
+      "text": "O Lord and Master of my life,\ntake from me the spirit of sloth, despair, lust of power, and idle talk.\nBut give rather the spirit of chastity, humility, patience, and love to Your servant.\nYea, O Lord and King,\ngrant me to see my own sins and not to judge my brother,\nfor You are blessed from all ages to all ages. Amen.",
+      "source": "EWTN",
+      "source_url": "https://www.ewtn.com/catholicism/devotions/lenten-prayer-of-st-ephrem-389",
+      "liturgical_contexts": ["lent", "weekday"],
+      "tags": ["traditional", "penance", "eastern"],
+      "language": "en"
+    },
+    {
+      "id": "stations-opening-prayer",
+      "title": "Prayer Before the Stations of the Cross",
+      "text": "My Lord Jesus Christ, You have made this journey to die for me with unspeakable love;\nand I have so many times ungratefully abandoned You.\nBut now I love You with all my heart;\nand, because I love You, I am sincerely sorry for ever having offended You.\nPardon me, my God, and permit me to accompany You on this journey.\nYou go to die for love of me; I wish, my beloved Redeemer, to die for love of You.\nMy Jesus, I will live and die always united to You. Amen.",
+      "source": "CatholicOnline",
+      "source_url": "https://www.catholic.org/prayers/prayer.php?p=45",
+      "liturgical_contexts": ["lent", "weekday"],
+      "tags": ["traditional", "passion", "stations"],
+      "language": "en"
+    },
+    {
+      "id": "regina-caeli",
+      "title": "Regina Caeli (Queen of Heaven)",
+      "text": "Queen of Heaven, rejoice, alleluia.\nFor He whom you did merit to bear, alleluia.\nHas risen, as he said, alleluia.\nPray for us to God, alleluia.\n\nRejoice and be glad, O Virgin Mary, alleluia.\nFor the Lord has truly risen, alleluia.\n\nLet us pray. O God, who gave joy to the world through the resurrection of Thy Son, our Lord Jesus Christ, grant we beseech Thee, that through the intercession of the Virgin Mary, His Mother, we may obtain the joys of everlasting life. Through the same Christ our Lord. Amen.",
+      "source": "EWTN",
+      "source_url": "https://www.ewtn.com/catholicism/devotions/regina-caeli-380",
+      "liturgical_contexts": ["easter", "marian"],
+      "tags": ["traditional", "marian", "resurrection"],
+      "language": "en"
+    },
+    {
+      "id": "easter-sequence",
+      "title": "Easter Sequence Prayer",
+      "text": "Christians, to the Paschal Victim offer your thankful praises!\nA Lamb the sheep redeems; Christ, who only is sinless,\nReconciles sinners to the Father.\nDeath and life have contended in that combat stupendous:\nThe Prince of life, who died, reigns immortal.\n\nSpeak, Mary, declaring what you saw, wayfaring.\n\"The tomb of Christ, who is living, the glory of Jesus' resurrection;\nBright angels attesting, the shroud and napkin resting.\nYes, Christ my hope is arisen; to Galilee he goes before you.\"\n\nChrist indeed from death is risen, our new life obtaining.\nHave mercy, victor King, ever reigning! Amen. Alleluia.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/easter-prayers",
+      "liturgical_contexts": ["easter", "sunday", "solemnity"],
+      "tags": ["traditional", "resurrection", "sequence"],
+      "language": "en"
+    },
+    {
+      "id": "pentecost-sequence",
+      "title": "Veni Sancte Spiritus (Come, Holy Spirit)",
+      "text": "Come, Holy Spirit, come!\nAnd from your celestial home\nShed a ray of light divine!\n\nCome, Father of the poor!\nCome, source of all our store!\nCome, within our bosoms shine.\n\nYou, of comforters the best;\nYou, the soul's most welcome guest;\nSweet refreshment here below;\n\nIn our labor, rest most sweet;\nGrateful coolness in the heat;\nSolace in the midst of woe.\n\nO most blessed Light divine,\nShine within these hearts of yours,\nAnd our inmost being fill!\n\nWhere you are not, we have naught,\nNothing good in deed or thought,\nNothing free from taint of ill.\n\nHeal our wounds, our strength renew;\nOn our dryness pour your dew;\nWash the stains of guilt away:\n\nBend the stubborn heart and will;\nMelt the frozen, warm the chill;\nGuide the steps that go astray.\n\nOn the faithful, who adore\nAnd confess you, evermore\nIn your sevenfold gift descend;\n\nGive them virtue's sure reward;\nGive them your salvation, Lord;\nGive them joys that never end. Amen. Alleluia.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/pentecost-prayers",
+      "liturgical_contexts": ["easter", "solemnity"],
+      "tags": ["traditional", "holy-spirit", "sequence"],
+      "language": "en"
+    },
+    {
+      "id": "divine-mercy-chaplet-opening",
+      "title": "Prayer from the Divine Mercy Chaplet",
+      "text": "Eternal God, in whom mercy is endless and the treasury of compassion inexhaustible,\nlook kindly upon us and increase Your mercy in us,\nthat in difficult moments we might not despair nor become despondent,\nbut with great confidence submit ourselves to Your holy will,\nwhich is Love and Mercy itself. Amen.",
+      "source": "EWTN",
+      "source_url": "https://www.ewtn.com/catholicism/devotions/divine-mercy-chaplet-470",
+      "liturgical_contexts": ["all", "ordinary", "easter"],
+      "tags": ["contemporary", "mercy", "st-faustina"],
+      "language": "en"
+    },
+    {
+      "id": "st-michael-archangel",
+      "title": "Prayer to St. Michael the Archangel",
+      "text": "St. Michael the Archangel, defend us in battle.\nBe our defense against the wickedness and snares of the Devil.\nMay God rebuke him, we humbly pray,\nand do thou, O Prince of the heavenly hosts,\nby the power of God, thrust into hell Satan,\nand all the evil spirits, who prowl about the world\nseeking the ruin of souls. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/prayer-saint-michael-archangel",
+      "liturgical_contexts": ["all", "ordinary", "feast"],
+      "tags": ["traditional", "angels", "protection"],
+      "language": "en"
+    },
+    {
+      "id": "st-therese-little-flower",
+      "title": "Prayer of St. Thérèse of Lisieux",
+      "text": "O my God! I offer Thee all my actions of this day for the intentions and for the glory of the Sacred Heart of Jesus.\nI desire to sanctify every beat of my heart, my every thought, my simplest works, by uniting them to Its infinite merits;\nand I wish to make reparation for my sins by casting them into the furnace of Its Merciful Love.\n\nO my God! I ask of Thee for myself and for those whom I hold dear, the grace to fulfill perfectly Thy Holy Will,\nto accept for love of Thee the joys and sorrows of this passing life,\nso that we may one day be united together in heaven for all Eternity. Amen.",
+      "source": "EWTN",
+      "source_url": "https://www.ewtn.com/catholicism/devotions/prayer-of-st-therese-397",
+      "liturgical_contexts": ["all", "saint", "ordinary"],
+      "tags": ["contemporary", "little-way", "carmelite"],
+      "language": "en"
+    },
+    {
+      "id": "st-thomas-aquinas-eucharist",
+      "title": "Prayer of St. Thomas Aquinas Before Holy Communion",
+      "text": "Almighty and ever-living God, I approach the sacrament of Your only-begotten Son, Our Lord Jesus Christ.\nI come sick to the doctor of life, unclean to the fountain of mercy, blind to the radiance of eternal light,\nand poor and needy to the Lord of heaven and earth.\n\nLord, in Your great generosity, heal my sickness, wash away my defilement,\nenlighten my blindness, enrich my poverty, and clothe my nakedness.\nMay I receive the bread of angels, the King of kings and Lord of lords,\nwith humble reverence, with the purity and faith, the repentance and love,\nand the determined purpose that will help to bring me to salvation.\n\nMay I receive the sacrament of the Lord's Body and Blood, and its reality and power.\nKind God, may I receive the Body of Your only-begotten Son, Our Lord Jesus Christ,\nborn from the womb of the Virgin Mary, and so be received into His mystical body\nand numbered among His members.\n\nLoving Father, as on my earthly pilgrimage I now receive Your beloved Son\nunder the veil of a sacrament, may I one day see Him face to face in glory,\nwho lives and reigns with You for ever. Amen.",
+      "source": "CatholicOnline",
+      "source_url": "https://www.catholic.org/prayers/prayer.php?p=186",
+      "liturgical_contexts": ["all", "saint", "weekday", "sunday"],
+      "tags": ["traditional", "eucharistic", "dominican"],
+      "language": "en"
+    },
+    {
+      "id": "st-ignatius-suscipe",
+      "title": "Suscipe of St. Ignatius of Loyola",
+      "text": "Take, Lord, and receive all my liberty,\nmy memory, my understanding,\nand my entire will,\nAll I have and call my own.\n\nYou have given all to me.\nTo you, Lord, I return it.\n\nEverything is yours; do with it what you will.\nGive me only your love and your grace,\nthat is enough for me. Amen.",
+      "source": "LoyolaPress",
+      "source_url": "https://www.loyolapress.com/catholic-resources/prayer/traditional-catholic-prayers/saints-prayers/suscipe-prayer-saint-ignatius-of-loyola/",
+      "liturgical_contexts": ["all", "saint", "ordinary"],
+      "tags": ["traditional", "surrender", "jesuit"],
+      "language": "en"
+    },
+    {
+      "id": "st-augustine-restless-hearts",
+      "title": "Prayer of St. Augustine on the Restless Heart",
+      "text": "Late have I loved you, Beauty so ancient and so new, late have I loved you!\nLo, you were within, but I outside, seeking there for you,\nand upon the shapely things you have made I rushed headlong, I, misshapen.\nYou were with me, but I was not with you.\nThey held me back far from you, those things which would have no being were they not in you.\nYou called, shouted, broke through my deafness;\nyou flared, blazed, banished my blindness;\nyou lavished your fragrance, I gasped, and now I pant for you;\nI tasted you, and I hunger and thirst;\nyou touched me, and I burned for your peace. Amen.",
+      "source": "Vatican",
+      "source_url": "https://www.vatican.va/spirit/documents/spirit_20010130_agostino_en.html",
+      "liturgical_contexts": ["all", "saint", "ordinary"],
+      "tags": ["traditional", "conversion", "augustinian"],
+      "language": "en"
+    },
+    {
+      "id": "st-patrick-breastplate",
+      "title": "Prayer from St. Patrick's Breastplate",
+      "text": "Christ with me, Christ before me, Christ behind me,\nChrist in me, Christ beneath me, Christ above me,\nChrist on my right, Christ on my left,\nChrist when I lie down, Christ when I sit down,\nChrist in the heart of every man who thinks of me,\nChrist in the mouth of every man who speaks of me,\nChrist in the eye that sees me,\nChrist in the ear that hears me.\n\nI arise today through a mighty strength,\nthe invocation of the Trinity,\nthrough a belief in the Threeness,\nthrough a confession of the Oneness\nof the Creator of creation. Amen.",
+      "source": "CatholicOnline",
+      "source_url": "https://www.catholic.org/prayers/prayer.php?p=1059",
+      "liturgical_contexts": ["all", "saint", "weekday"],
+      "tags": ["traditional", "celtic", "protection"],
+      "language": "en"
+    },
+    {
+      "id": "blessed-sacrament-adoration",
+      "title": "Prayer for Adoration of the Blessed Sacrament",
+      "text": "O Sacrament most holy, O Sacrament divine,\nall praise and all thanksgiving be every moment Thine!\n\nLord Jesus Christ, in this wondrous Sacrament, You have left us a memorial of Your Passion.\nGrant, we implore You, that we may so venerate the sacred mysteries of Your Body and Blood,\nas always to be conscious of the fruit of Your Redemption.\nYou who live and reign forever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/eucharistic-adoration-prayers",
+      "liturgical_contexts": ["all", "weekday", "solemnity"],
+      "tags": ["eucharistic", "adoration"],
+      "language": "en"
+    },
+    {
+      "id": "corpus-christi-collect",
+      "title": "Prayer for the Solemnity of Corpus Christi",
+      "text": "O God, who in this wonderful Sacrament\nhave left us a memorial of your Passion,\ngrant us, we pray,\nso to revere the sacred mysteries of your Body and Blood\nthat we may always experience in ourselves\nthe fruits of your redemption.\nWho live and reign with God the Father\nin the unity of the Holy Spirit,\none God, for ever and ever. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/corpus-christi-prayers",
+      "liturgical_contexts": ["solemnity", "ordinary"],
+      "tags": ["eucharistic", "feast"],
+      "language": "en"
+    },
+    {
+      "id": "immaculate-heart-mary",
+      "title": "Prayer to the Immaculate Heart of Mary",
+      "text": "O Most Blessed Mother, heart of love, heart of mercy,\never listening, caring, consoling,\nhear our prayer.\n\nAs your children, we implore your intercession\nwith Jesus your Son.\nReceive with understanding and compassion\nthe petitions we place before you today,\nespecially [mention your intention].\n\nWe are comforted in knowing your heart\nis ever open to those who ask for your prayer.\nWe trust to your gentle care and intercession\nthose whom we love and who are sick or lonely or hurting.\n\nHelp all of us, Holy Mother,\nto bear our burdens in this life\nuntil we may share eternal life and peace with God forever. Amen.",
+      "source": "EWTN",
+      "source_url": "https://www.ewtn.com/catholicism/devotions/immaculate-heart-of-mary-393",
+      "liturgical_contexts": ["marian", "memorial"],
+      "tags": ["marian", "intercession"],
+      "language": "en"
+    },
+    {
+      "id": "guardian-angel-prayer",
+      "title": "Prayer to One's Guardian Angel",
+      "text": "Angel of God, my guardian dear,\nto whom God's love commits me here,\never this day be at my side,\nto light and guard, to rule and guide. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/prayer-guardian-angel",
+      "liturgical_contexts": ["all", "weekday"],
+      "tags": ["traditional", "angels", "protection"],
+      "language": "en"
+    }
+  ]
+}

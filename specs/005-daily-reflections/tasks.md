@@ -28,14 +28,14 @@ Project uses single Python package structure:
 
 **Purpose**: Project initialization, dependencies, and prayer database
 
-- [ ] T001 Add dependencies to pyproject.toml: anthropic>=0.8.0, python-dotenv>=1.0.0
-- [ ] T002 Install Node.js dependencies for romcal (liturgical calendar): npm install romcal
-- [ ] T003 Create .env.example file with ANTHROPIC_API_KEY and ANTHROPIC_MAX_COST_PER_REFLECTION placeholders
-- [ ] T004 [P] Update .gitignore to exclude .env file
-- [ ] T005 [P] Create data/ directory for prayer database
-- [ ] T006 AI generates data/prayers.json with 20-30 lesser-known Catholic prayers from 5 approved sources (excluding Hail Mary, Our Father, Glory Be)
-- [ ] T007 Human reviews data/prayers.json for theological accuracy and appropriateness
-- [ ] T008 Human commits data/prayers.json to repository (approval via Git commit)
+- [X] T001 Add dependencies to pyproject.toml: anthropic>=0.8.0, python-dotenv>=1.0.0
+- [X] T002 Install Node.js dependencies for romcal (liturgical calendar): npm install romcal
+- [X] T003 Create .env.example file with ANTHROPIC_API_KEY and ANTHROPIC_MAX_COST_PER_REFLECTION placeholders
+- [X] T004 [P] Update .gitignore to exclude .env file
+- [X] T005 [P] Create data/ directory for prayer database
+- [X] T006 AI generates data/prayers.json with 20-30 lesser-known Catholic prayers from 5 approved sources (excluding Hail Mary, Our Father, Glory Be)
+- [X] T007 Human reviews data/prayers.json for theological accuracy and appropriateness
+- [X] T008 Human commits data/prayers.json to repository (approval via Git commit)
 
 ---
 
@@ -47,25 +47,25 @@ Project uses single Python package structure:
 
 ### AI Module (Core Infrastructure)
 
-- [ ] T009 [P] Create src/catholic_liturgy_tools/ai/__init__.py module initialization
-- [ ] T010 [P] Implement AnthropicClient wrapper in src/catholic_liturgy_tools/ai/client.py with load_dotenv() for environment variables
-- [ ] T011 [P] Create AI response models in src/catholic_liturgy_tools/ai/models.py: ReadingSynopsis, DailyReflection, CCCCitation
-- [ ] T012 [P] Implement prompt templates in src/catholic_liturgy_tools/ai/prompts.py following contracts/ai-prompts.md
-- [ ] T013 [P] Implement CostTracker in src/catholic_liturgy_tools/ai/cost_tracker.py with $0.04 limit enforcement
+- [X] T009 [P] Create src/catholic_liturgy_tools/ai/__init__.py module initialization
+- [X] T010 [P] Implement AnthropicClient wrapper in src/catholic_liturgy_tools/ai/client.py with load_dotenv() for environment variables
+- [X] T011 [P] Create AI response models in src/catholic_liturgy_tools/ai/models.py: ReadingSynopsis, DailyReflection, CCCCitation
+- [X] T012 [P] Implement prompt templates in src/catholic_liturgy_tools/ai/prompts.py following contracts/ai-prompts.md
+- [X] T013 [P] Implement CostTracker in src/catholic_liturgy_tools/ai/cost_tracker.py with $0.04 limit enforcement
 
 ### Liturgy Module (Core Infrastructure)
 
-- [ ] T014 [P] Create src/catholic_liturgy_tools/liturgy/__init__.py module initialization
-- [ ] T015 [P] Implement liturgical calendar wrapper in src/catholic_liturgy_tools/liturgy/calendar.py calling romcal via subprocess with UTC timezone handling
-- [ ] T016 [P] Implement prayer loader in src/catholic_liturgy_tools/liturgy/prayers.py to load and select from data/prayers.json
-- [ ] T017 [P] Implement CCC validator in src/catholic_liturgy_tools/liturgy/ccc_validator.py with range 1-2865 validation
+- [X] T014 [P] Create src/catholic_liturgy_tools/liturgy/__init__.py module initialization
+- [X] T015 [P] Implement liturgical calendar wrapper in src/catholic_liturgy_tools/liturgy/calendar.py calling romcal via subprocess with UTC timezone handling
+- [X] T016 [P] Implement prayer loader in src/catholic_liturgy_tools/liturgy/prayers.py to load and select from data/prayers.json
+- [X] T017 [P] Implement CCC validator in src/catholic_liturgy_tools/liturgy/ccc_validator.py with range 1-2865 validation
 
 ### Data Models (Core Infrastructure)
 
-- [ ] T018 Extend existing DailyReading model in src/catholic_liturgy_tools/scraper/models.py with new optional attributes: synopses, reflection, prayer, feast_info, cost_summary, generation_timestamp, ai_service_status
-- [ ] T019 [P] Create SourcedPrayer dataclass in src/catholic_liturgy_tools/scraper/models.py per data-model.md
-- [ ] T020 [P] Create FeastDayInfo and SaintBiography dataclasses in src/catholic_liturgy_tools/scraper/models.py per data-model.md
-- [ ] T021 [P] Create ReflectionCostSummary dataclass in src/catholic_liturgy_tools/scraper/models.py per data-model.md
+- [X] T018 Extend existing DailyReading model in src/catholic_liturgy_tools/scraper/models.py with new optional attributes: synopses, reflection, prayer, feast_info, cost_summary, generation_timestamp, ai_service_status
+- [X] T019 [P] Create SourcedPrayer dataclass in src/catholic_liturgy_tools/scraper/models.py per data-model.md
+- [X] T020 [P] Create FeastDayInfo and SaintBiography dataclasses in src/catholic_liturgy_tools/scraper/models.py per data-model.md
+- [X] T021 [P] Create ReflectionCostSummary dataclass in src/catholic_liturgy_tools/scraper/models.py per data-model.md
 
 ### Test Infrastructure
 
