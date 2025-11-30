@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.1] - 2025-11-30
+
+### Fixed
+
+- **Content preservation**: Site content now accumulates across GitHub Actions workflow runs
+  - Removed `_site/` from `.gitignore` to allow Git tracking
+  - Added workflow step to commit generated content after each run
+  - Changed workflow permissions from `contents: read` to `contents: write`
+  - Index page now displays all historical content, not just latest
+  - Existing CLI commands already preserved directory contents correctly
+  
+- **Test coverage**: Added comprehensive integration tests
+  - Content accumulation across multiple runs (User Story 1)
+  - Index page displays full history (User Story 2)
+  - Safe overwrite behavior for same-date regeneration (User Story 3)
+  - 14 new integration tests covering all scenarios
+  - Overall test coverage maintained at 92.56%
+
+### Technical Details
+
+- This fixes the issue where only the latest message and reading appeared on the index page
+- Each workflow run now commits `_site/` changes to repository
+- Workflow handles edge cases: no changes to commit, empty directories, overwrites
+- No changes to Python code - only workflow configuration and test additions
+- Feature implemented as per speckit methodology (004-preserve-site-history)
+
+---
+
 ## [0.3.0] - 2025-11-25
 
 ### Added

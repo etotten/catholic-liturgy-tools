@@ -153,5 +153,5 @@ cython_debug/
 
 junk/
 
-# Generated site content (locally)
-_site/
+# Note: _site/ is now tracked in Git to preserve historical content
+# between GitHub Actions workflow runs (see feature 004-preserve-site-history)

@@ -23,6 +23,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11: Follow standard conventions
 
 ## Recent Changes
+- 004-preserve-site-history: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 - 001-github-pages: Added Python 3.11
 
 - 001-github-pages: Added Python 3.11
