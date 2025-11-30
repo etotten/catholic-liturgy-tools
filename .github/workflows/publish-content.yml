@@ -15,7 +15,7 @@ on:
     - cron: '0 12 * * *'  # Run daily at 6 AM Central Time (noon UTC)
 
 permissions:
-  contents: read
+  contents: write  # Changed from 'read' to allow committing _site/ (feature 004)
   pages: write
   id-token: write
 
@@ -63,6 +63,25 @@ jobs:
       - name: Generate index page
         run: |
           catholic-liturgy generate-index
+      
+      - name: Commit generated content to repository
+        run: |
+          # Configure Git for commits
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Stage all _site/ content
+          git add _site/
+          
+          # Commit if there are changes (idempotent)
+          if ! git diff --staged --quiet; then
+            git commit -m "Generated content for $(date +%Y-%m-%d)"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4

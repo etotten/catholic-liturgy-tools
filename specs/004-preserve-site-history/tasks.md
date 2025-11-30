@@ -28,9 +28,9 @@ description: "Task list for implementing site content preservation and accumulat
 
 **Purpose**: Project initialization and workflow configuration validation
 
-- [ ] T001 Verify current workflow structure in `.github/workflows/publish-content.yml`
-- [ ] T002 [P] Review current CLI command implementations for content generation
-- [ ] T003 [P] Verify Python 3.13 configuration in workflow and pyproject.toml
+- [X] T001 Verify current workflow structure in `.github/workflows/publish-content.yml`
+- [X] T002 [P] Review current CLI command implementations for content generation
+- [X] T003 [P] Verify Python 3.13 configuration in workflow and pyproject.toml
 
 ---
 
@@ -40,11 +40,11 @@ description: "Task list for implementing site content preservation and accumulat
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Modify workflow permissions from `contents: read` to `contents: write` in `.github/workflows/publish-content.yml`
-- [ ] T005 Add new workflow step "Commit generated content to repository" after "Generate index page" step in `.github/workflows/publish-content.yml`
-- [ ] T006 Configure Git user credentials (github-actions[bot]) in new commit step
-- [ ] T007 Implement git add, commit, and push commands for `_site/` directory in new workflow step
-- [ ] T008 Add idempotent handling for "nothing to commit" scenario in workflow
+- [X] T004 Modify workflow permissions from `contents: read` to `contents: write` in `.github/workflows/publish-content.yml`
+- [X] T005 Add new workflow step "Commit generated content to repository" after "Generate index page" step in `.github/workflows/publish-content.yml`
+- [X] T006 Configure Git user credentials (github-actions[bot]) in new commit step
+- [X] T007 Implement git add, commit, and push commands for `_site/` directory in new workflow step
+- [X] T008 Add idempotent handling for "nothing to commit" scenario in workflow
 
 **Checkpoint**: Foundation ready - workflow can now preserve content between runs
 
@@ -60,17 +60,17 @@ description: "Task list for implementing site content preservation and accumulat
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T009 [P] [US1] Create integration test `tests/integration/test_content_accumulation.py` to verify multiple runs accumulate files
-- [ ] T010 [P] [US1] Create test helper in `tests/integration/test_content_accumulation.py` to simulate workflow runs
-- [ ] T011 [P] [US1] Add test case for message accumulation: verify 3 dates produce 3 message files
-- [ ] T012 [P] [US1] Add test case for readings accumulation: verify 3 dates produce 3 readings files
+- [X] T009 [P] [US1] Create integration test `tests/integration/test_content_accumulation.py` to verify multiple runs accumulate files
+- [X] T010 [P] [US1] Create test helper in `tests/integration/test_content_accumulation.py` to simulate workflow runs
+- [X] T011 [P] [US1] Add test case for message accumulation: verify 3 dates produce 3 message files
+- [X] T012 [P] [US1] Add test case for readings accumulation: verify 3 dates produce 3 readings files
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Validate that CLI commands (generate-message, generate-readings) preserve existing directory contents
-- [ ] T014 [US1] Test workflow change locally using `act` or manual workflow_dispatch trigger
-- [ ] T015 [US1] Verify git commit step executes successfully on first workflow run
-- [ ] T016 [US1] Verify git commit step handles "nothing to commit" on repeat run
+- [X] T013 [US1] Validate that CLI commands (generate-message, generate-readings) preserve existing directory contents
+- [X] T014 [US1] Test workflow change locally using `act` or manual workflow_dispatch trigger
+- [X] T015 [US1] Verify git commit step executes successfully on first workflow run
+- [X] T016 [US1] Verify git commit step handles "nothing to commit" on repeat run
 
 **Checkpoint**: At this point, content accumulation should work - workflow persists _site/ across runs
 
@@ -84,17 +84,17 @@ description: "Task list for implementing site content preservation and accumulat
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T017 [P] [US2] Create integration test `tests/integration/test_index_accumulation.py` to verify index lists all content
-- [ ] T018 [P] [US2] Add test case: generate 5 dates of content, verify index contains 5 entries
-- [ ] T019 [P] [US2] Add test case: verify index maintains reverse chronological order (newest first)
-- [ ] T020 [P] [US2] Add test case: verify index includes both messages and readings links
+- [X] T017 [P] [US2] Create integration test `tests/integration/test_index_accumulation.py` to verify index lists all content
+- [X] T018 [P] [US2] Add test case: generate 5 dates of content, verify index contains 5 entries
+- [X] T019 [P] [US2] Add test case: verify index maintains reverse chronological order (newest first)
+- [X] T020 [P] [US2] Add test case: verify index includes both messages and readings links
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Verify `src/catholic_liturgy_tools/generator/index.py` scan_message_files() works correctly with accumulated content
-- [ ] T022 [US2] Verify `src/catholic_liturgy_tools/generator/index.py` scan_readings_files() works correctly with accumulated content
-- [ ] T023 [US2] Validate index generation produces correct HTML with all historical entries
-- [ ] T024 [US2] Test index page rendering in browser with 10+ dates of content
+- [X] T021 [US2] Verify `src/catholic_liturgy_tools/generator/index.py` scan_message_files() works correctly with accumulated content
+- [X] T022 [US2] Verify `src/catholic_liturgy_tools/generator/index.py` scan_readings_files() works correctly with accumulated content
+- [X] T023 [US2] Validate index generation produces correct HTML with all historical entries
+- [X] T024 [US2] Test index page rendering in browser with 10+ dates of content
 
 **Checkpoint**: At this point, index page should display full content history correctly
 
@@ -108,17 +108,17 @@ description: "Task list for implementing site content preservation and accumulat
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T025 [P] [US3] Create integration test `tests/integration/test_overwrite_behavior.py` to verify same-date regeneration
-- [ ] T026 [P] [US3] Add test case: generate date X twice, verify only one file for date X exists
-- [ ] T027 [P] [US3] Add test case: generate date X, Y, regenerate X, verify both X and Y still exist
-- [ ] T028 [P] [US3] Add test case: verify workflow handles empty _site/ directory on first run
+- [X] T025 [P] [US3] Create integration test `tests/integration/test_overwrite_behavior.py` to verify same-date regeneration
+- [X] T026 [P] [US3] Add test case: generate date X twice, verify only one file for date X exists
+- [X] T027 [P] [US3] Add test case: generate date X, Y, regenerate X, verify both X and Y still exist
+- [X] T028 [P] [US3] Add test case: verify workflow handles empty _site/ directory on first run
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Validate CLI commands handle overwrite scenario (same date, different content)
-- [ ] T030 [US3] Test workflow commit step handles "no changes" when regenerating same date with same content
-- [ ] T031 [US3] Verify workflow doesn't create empty commits when content unchanged
-- [ ] T032 [US3] Add workflow documentation comment explaining content preservation behavior
+- [X] T029 [US3] Validate CLI commands handle overwrite scenario (same date, different content)
+- [X] T030 [US3] Test workflow commit step handles "no changes" when regenerating same date with same content
+- [X] T031 [US3] Verify workflow doesn't create empty commits when content unchanged
+- [X] T032 [US3] Add workflow documentation comment explaining content preservation behavior
 
 **Checkpoint**: All user stories should now be independently functional with safe overwrite behavior
 
@@ -128,14 +128,14 @@ description: "Task list for implementing site content preservation and accumulat
 
 **Purpose**: Improvements that affect multiple user stories and final validation
 
-- [ ] T033 [P] Update `quickstart.md` with actual test results and validation steps
-- [ ] T034 [P] Add workflow monitoring documentation in `specs/004-preserve-site-history/research.md`
-- [ ] T035 Run full test suite to verify 90% coverage maintained (per constitution)
-- [ ] T036 Execute `quickstart.md` validation scenarios end-to-end
-- [ ] T037 [P] Update `CHANGELOG.md` with feature 004 changes
-- [ ] T038 [P] Create PR description with before/after workflow comparison
-- [ ] T039 Manual verification: trigger workflow for new date, check GitHub commit history
-- [ ] T040 Manual verification: check GitHub Pages deployment shows accumulated content
+- [X] T033 [P] Update `quickstart.md` with actual test results and validation steps
+- [X] T034 [P] Add workflow monitoring documentation in `specs/004-preserve-site-history/research.md`
+- [X] T035 Run full test suite to verify 90% coverage maintained (per constitution)
+- [X] T036 Execute `quickstart.md` validation scenarios end-to-end
+- [X] T037 [P] Update `CHANGELOG.md` with feature 004 changes
+- [X] T038 [P] Create PR description with before/after workflow comparison
+- [X] T039 Manual verification: trigger workflow for new date, check GitHub commit history
+- [X] T040 Manual verification: check GitHub Pages deployment shows accumulated content
 
 ---
 
