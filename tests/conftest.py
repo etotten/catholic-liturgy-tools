@@ -61,14 +61,46 @@ def mock_anthropic_response():
 
 
 @pytest.fixture
-def mock_anthropic_client(mocker, mock_anthropic_response):
+def mock_anthropic_client(mocker):
     """Mock AnthropicClient for testing without API calls."""
     from catholic_liturgy_tools.ai.client import AnthropicClient
     
     # Mock the underlying Anthropic API client
     mock_api_client = mocker.patch('catholic_liturgy_tools.ai.client.Anthropic')
     mock_instance = mock_api_client.return_value
-    mock_instance.messages.create.return_value = mock_anthropic_response
+    
+    # Create a side effect function that returns different responses based on system prompt
+    def mock_create(**kwargs):
+        mock_response = MagicMock()
+        system_prompt = kwargs.get('system', '')
+        
+        if 'spiritual director' in system_prompt.lower():
+            # Return reflection response
+            reflection_json = json.dumps({
+                "reflection_text": "<p>" + "Today's readings invite us to consider God's mercy and providence. " * 40 + "</p>",
+                "pondering_questions": [
+                    "How does God's call challenge me today?",
+                    "Where do I need to trust more in God's providence?",
+                    "What does it mean to speak tenderly to others?"
+                ],
+                "ccc_citations": [
+                    {
+                        "paragraph_number": 2558,
+                        "excerpt_text": "Prayer is the raising of one's mind and heart to God.",
+                        "context_note": "This connects to today's Gospel call to prayer."
+                    }
+                ]
+            })
+            mock_response.content = [MagicMock(text=reflection_json)]
+            mock_response.usage = MagicMock(input_tokens=500, output_tokens=400)
+        else:
+            # Return synopsis response
+            mock_response.content = [MagicMock(text='{"synopsis": "God offers comfort and forgiveness to His people through Christ."}')]
+            mock_response.usage = MagicMock(input_tokens=100, output_tokens=20)
+        
+        return mock_response
+    
+    mock_instance.messages.create.side_effect = mock_create
     
     # Create real AnthropicClient with mocked API
     client = AnthropicClient(api_key="test-api-key")

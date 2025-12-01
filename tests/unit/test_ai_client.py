@@ -98,9 +98,13 @@ class TestAnthropicClientReflection:
         from catholic_liturgy_tools.scraper.models import FeastDayInfo
         
         feast_info = FeastDayInfo(
-            name="Immaculate Conception of the Blessed Virgin Mary",
-            rank="Solemnity",
-            color="White"
+            feast_name="Immaculate Conception of the Blessed Virgin Mary",
+            feast_type="Solemnity",
+            liturgical_color="White",
+            is_saint=False,
+            is_marian=True,
+            is_apostle=False,
+            is_martyr=False
         )
         
         result = client.generate_reflection(

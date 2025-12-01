@@ -83,6 +83,75 @@ CSS_STYLES = """
             color: #5d1a1a;
         }
         
+        .reflection-section {
+            margin: 40px 0;
+            padding: 30px;
+            background-color: #f5f0e8;
+            border: 2px solid #8b3a3a;
+            border-radius: 5px;
+        }
+        
+        .reflection-section h2 {
+            color: #5d1a1a;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .reflection-section h3 {
+            color: #8b3a3a;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .reflection-text {
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        .reflection-text p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        
+        .pondering-questions ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .pondering-questions li {
+            margin: 12px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .pondering-questions li:before {
+            content: "❖";
+            position: absolute;
+            left: 0;
+            color: #8b3a3a;
+            font-weight: bold;
+        }
+        
+        .ccc-citations ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .ccc-citations li {
+            margin: 15px 0;
+            padding: 12px;
+            background-color: #fff;
+            border-left: 3px solid #8b3a3a;
+            line-height: 1.6;
+        }
+        
+        .ccc-citations strong {
+            color: #5d1a1a;
+        }
+        
         @media (max-width: 600px) {
             body {
                 padding: 0 10px;
@@ -94,6 +163,18 @@ CSS_STYLES = """
             }
             
             .reading-title {
+                font-size: 1.2em;
+            }
+            
+            .reflection-section {
+                padding: 20px 15px;
+            }
+            
+            .reflection-section h2 {
+                font-size: 1.5em;
+            }
+            
+            .reflection-section h3 {
                 font-size: 1.2em;
             }
         }
@@ -163,6 +244,55 @@ def generate_readings_html(reading: DailyReading) -> str:
     # Join all reading entries
     all_readings_html = "\n    \n".join(reading_entries_html)
     
+    # Build reflection section HTML if reflection is present
+    reflection_html = ""
+    if hasattr(reading, 'reflection') and reading.reflection:
+        reflection = reading.reflection
+        
+        # Format reflection text (already HTML from AI)
+        reflection_text_safe = sanitize_text(reflection.reflection_text) if isinstance(reflection.reflection_text, str) else reflection.reflection_text
+        
+        # Format pondering questions
+        questions_html = ""
+        if reflection.pondering_questions:
+            questions_list = "\n            ".join(
+                f"<li>{sanitize_text(q)}</li>" for q in reflection.pondering_questions
+            )
+            questions_html = f"""
+        <div class="pondering-questions">
+            <h3>Pondering Questions</h3>
+            <ul>
+            {questions_list}
+            </ul>
+        </div>"""
+        
+        # Format CCC citations
+        citations_html = ""
+        if reflection.ccc_citations:
+            citations_list = "\n            ".join(
+                f'<li><strong>CCC {cit.paragraph_number}:</strong> {sanitize_text(cit.excerpt_text)}'
+                + (f' <em>({sanitize_text(cit.context_note)})</em>' if cit.context_note else '')
+                + '</li>'
+                for cit in reflection.ccc_citations
+            )
+            citations_html = f"""
+        <div class="ccc-citations">
+            <h3>From the Catechism</h3>
+            <ul>
+            {citations_list}
+            </ul>
+        </div>"""
+        
+        # Build complete reflection section
+        reflection_html = f"""
+    
+    <div class="reflection-section">
+        <h2>Daily Reflection</h2>
+        <div class="reflection-text">
+            {reflection_text_safe}
+        </div>{questions_html}{citations_html}
+    </div>"""
+    
     # Build complete HTML document
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -180,7 +310,7 @@ def generate_readings_html(reading: DailyReading) -> str:
     <h1>{liturgical_day_safe}</h1>
     <p class="date">{date_display_safe}</p>
     
-{all_readings_html}
+{all_readings_html}{reflection_html}
     
     <div class="attribution">
         <p>Readings from <a href="{source_url_safe}" target="_blank" rel="noopener noreferrer">USCCB.org</a></p>

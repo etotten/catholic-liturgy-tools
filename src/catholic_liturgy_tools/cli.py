@@ -106,6 +106,35 @@ def generate_readings_command(args):
                     # Add synopses to reading object
                     reading.synopses = synopses
                     
+                    # Generate daily reflection
+                    print("  Generating daily reflection...")
+                    try:
+                        # Prepare readings list for reflection
+                        readings_list = [
+                            {
+                                "title": r.title,
+                                "citation": r.citation,
+                                "text": r.text
+                            }
+                            for r in reading.readings
+                        ]
+                        
+                        # Generate reflection
+                        reflection = client.generate_reflection(
+                            date_display=date_display,
+                            liturgical_day=reading.liturgical_day,
+                            feast_context=getattr(reading, 'feast_info', None),
+                            readings=readings_list
+                        )
+                        
+                        # Add reflection to reading object
+                        reading.reflection = reflection
+                        print("  ✓ Generated daily reflection")
+                        
+                    except Exception as e:
+                        print(f"  ✗ Failed to generate reflection: {e}", file=sys.stderr)
+                        reading.reflection = None
+                    
                     # Report cost
                     cost_summary = client.get_cost_summary()
                     print(f"AI content generation cost: ${cost_summary['total_cost']:.4f}")
