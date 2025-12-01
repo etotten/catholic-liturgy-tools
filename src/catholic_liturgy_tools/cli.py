@@ -70,6 +70,50 @@ def generate_readings_command(args):
         
         print(f'Successfully fetched readings for "{reading.liturgical_day}"')
         
+        # Generate AI-augmented content if requested
+        if args.with_reflections:
+            print("Generating AI-augmented content...")
+            try:
+                from catholic_liturgy_tools.ai.client import AnthropicClient
+                
+                # Initialize AI client
+                api_key = os.getenv("ANTHROPIC_API_KEY")
+                if not api_key:
+                    print("Warning: ANTHROPIC_API_KEY not found. Skipping AI content generation.", file=sys.stderr)
+                    print("Set ANTHROPIC_API_KEY in .env file to enable reflections.", file=sys.stderr)
+                else:
+                    client = AnthropicClient(api_key=api_key)
+                    
+                    # Generate synopses for each reading
+                    synopses = []
+                    for reading_entry in reading.readings:
+                        try:
+                            synopsis = client.generate_synopsis(
+                                reading_title=reading_entry.title,
+                                reading_text=reading_entry.text,
+                                citation=reading_entry.citation
+                            )
+                            synopses.append({
+                                "reading_title": synopsis.reading_title,
+                                "synopsis_text": synopsis.synopsis_text,
+                                "tokens_used": synopsis.tokens_used
+                            })
+                            print(f"  ✓ Generated synopsis for {reading_entry.title}")
+                        except Exception as e:
+                            print(f"  ✗ Failed to generate synopsis for {reading_entry.title}: {e}", file=sys.stderr)
+                            synopses.append(None)
+                    
+                    # Add synopses to reading object
+                    reading.synopses = synopses
+                    
+                    # Report cost
+                    cost_summary = client.get_cost_summary()
+                    print(f"AI content generation cost: ${cost_summary['total_cost']:.4f}")
+                    
+            except Exception as e:
+                print(f"Warning: AI content generation failed: {e}", file=sys.stderr)
+                print("Continuing with readings only...", file=sys.stderr)
+        
         # Generate HTML page
         output_path = generate_readings_page(reading, args.output_dir)
         
@@ -304,6 +348,11 @@ def main():
         "-o",
         default="_site/readings",
         help="Output directory for HTML files (default: _site/readings)",
+    )
+    readings_parser.add_argument(
+        "--with-reflections",
+        action="store_true",
+        help="Generate AI-augmented content including synopses and daily reflection (requires ANTHROPIC_API_KEY)",
     )
     readings_parser.set_defaults(func=generate_readings_command)
     

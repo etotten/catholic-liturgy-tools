@@ -45,6 +45,14 @@ CSS_STYLES = """
             font-size: 1.5em;
         }
         
+        .reading-synopsis {
+            color: #666;
+            font-style: italic;
+            margin: 10px 0;
+            padding-left: 10px;
+            border-left: 3px solid #ccc;
+        }
+        
         .reading-text p {
             margin: 10px 0;
             text-align: justify;
@@ -124,9 +132,18 @@ def generate_readings_html(reading: DailyReading) -> str:
     
     # Build reading entries HTML
     reading_entries_html = []
-    for reading_entry in reading.readings:
+    for idx, reading_entry in enumerate(reading.readings):
         # Get title with citation
         title_safe = sanitize_text(reading_entry.title_with_citation)
+        
+        # Check for synopsis (AI-generated summary)
+        synopsis_html = ""
+        if reading.synopses and idx < len(reading.synopses):
+            synopsis_data = reading.synopses[idx]
+            synopsis_text = synopsis_data.get("synopsis_text", "")
+            if synopsis_text:
+                synopsis_safe = sanitize_text(synopsis_text)
+                synopsis_html = f'\n        <p class="reading-synopsis"><em>{synopsis_safe}</em></p>'
         
         # Format and sanitize paragraphs
         paragraphs = format_paragraphs(reading_entry.text)
@@ -136,7 +153,7 @@ def generate_readings_html(reading: DailyReading) -> str:
         
         # Build reading entry
         entry_html = f"""    <div class="reading-entry">
-        <h2 class="reading-title">{title_safe}</h2>
+        <h2 class="reading-title">{title_safe}</h2>{synopsis_html}
         <div class="reading-text">
             {paragraphs_html}
         </div>

@@ -1,5 +1,7 @@
 """AI prompt templates for generating synopses and reflections."""
 
+from typing import Optional
+
 SYNOPSIS_SYSTEM_PROMPT = """You are a Catholic theologian and Scripture scholar assisting with liturgical reflection. 
 Your task is to create concise, accessible summaries of Scripture readings that capture 
 the core message in plain language suitable for a general audience.
@@ -25,7 +27,15 @@ def build_synopsis_user_prompt(reading_title: str, reading_text: str, citation: 
         
     Returns:
         Formatted user prompt string
+        
+    Raises:
+        ValueError: If reading_text or citation is empty
     """
+    if not reading_text or not reading_text.strip():
+        raise ValueError("reading_text cannot be empty")
+    if not citation or not citation.strip():
+        raise ValueError("citation cannot be empty")
+    
     return f"""Reading Title: {reading_title}
 Reading Text:
 {reading_text}
@@ -61,21 +71,39 @@ Your output must be valid JSON."""
 def build_reflection_user_prompt(
     date_display: str,
     liturgical_day: str,
-    feast_context: str,
-    readings_list: str
+    feast_context: Optional[str],
+    readings: list
 ) -> str:
     """Build user prompt for daily reflection generation.
     
     Args:
         date_display: Human-readable date (e.g., "Saturday, November 30, 2025")
         liturgical_day: Liturgical context (e.g., "Saturday of the Thirty-Fourth Week in Ordinary Time")
-        feast_context: Optional feast day info (e.g., "Memorial of Saint Andrew, Apostle" or empty)
-        readings_list: Formatted list of all readings with titles, citations, and full text
+        feast_context: Optional feast day info object or None
+        readings: List of reading dicts with 'title', 'citation', 'text'
         
     Returns:
         Formatted user prompt string
+        
+    Raises:
+        ValueError: If readings list is empty
     """
-    feast_section = f"\nFeast Day: {feast_context}" if feast_context else ""
+    if not readings:
+        raise ValueError("readings list cannot be empty")
+    
+    readings_list = format_readings_list(readings)
+    
+    feast_section = ""
+    if feast_context:
+        if isinstance(feast_context, dict):
+            feast_name = feast_context.get("feast_name", feast_context.get("name", ""))
+            feast_type = feast_context.get("feast_type", feast_context.get("rank", ""))
+            feast_section = f"\nFeast Day: {feast_name} ({feast_type})"
+        else:
+            # If feast_context has attributes (dataclass)
+            feast_name = getattr(feast_context, "feast_name", getattr(feast_context, "name", ""))
+            feast_type = getattr(feast_context, "feast_type", getattr(feast_context, "rank", ""))
+            feast_section = f"\nFeast Day: {feast_name} ({feast_type})"
     
     return f"""Date: {date_display}
 Liturgical Context: {liturgical_day}{feast_section}
@@ -117,7 +145,13 @@ def format_readings_list(readings: list) -> str:
         
     Returns:
         Formatted readings string
+        
+    Raises:
+        ValueError: If readings list is empty
     """
+    if not readings:
+        raise ValueError("readings list cannot be empty")
+    
     formatted = []
     for reading in readings:
         title = reading.get("title", "Reading")

@@ -69,9 +69,9 @@ Project uses single Python package structure:
 
 ### Test Infrastructure
 
-- [ ] T022 [P] Update tests/conftest.py with AI mocking fixtures using pytest-mock
-- [ ] T023 [P] Create tests/fixtures/sample_prayers.json with test prayer data
-- [ ] T024 [P] Create tests/fixtures/sample_readings.json with test reading data
+- [X] T022 [P] Update tests/conftest.py with AI mocking fixtures using pytest-mock
+- [X] T023 [P] Create tests/fixtures/sample_prayers.json with test prayer data
+- [X] T024 [P] Create tests/fixtures/sample_readings.json with test reading data
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -85,19 +85,19 @@ Project uses single Python package structure:
 
 ### Tests for User Story 1 (TDD - Write First, Ensure Fail)
 
-- [ ] T025 [P] [US1] Unit test for synopsis generation in tests/unit/test_ai_client.py (should fail initially)
-- [ ] T026 [P] [US1] Unit test for prompt template in tests/unit/test_prompts.py (should fail initially)
-- [ ] T027 [P] [US1] Unit test for cost tracking in tests/unit/test_cost_tracker.py (should fail initially)
-- [ ] T028 [P] [US1] Integration test for synopsis workflow in tests/integration/test_synopsis_workflow.py (should fail initially)
-- [ ] T029 [P] [US1] E2E test for CLI with --with-reflections in tests/e2e/test_cli_readings.py (should fail initially)
+- [X] T025 [P] [US1] Unit test for synopsis generation in tests/unit/test_ai_client.py (should fail initially)
+- [X] T026 [P] [US1] Unit test for prompt template in tests/unit/test_prompts.py (should fail initially)
+- [X] T027 [P] [US1] Unit test for cost tracking in tests/unit/test_cost_tracker.py (should fail initially)
+- [X] T028 [P] [US1] Integration test for synopsis workflow in tests/integration/test_synopsis_workflow.py (should fail initially)
+- [X] T029 [P] [US1] E2E test for CLI with --with-reflections in tests/e2e/test_cli_readings.py (should fail initially)
 
 ### Implementation for User Story 1
 
-- [ ] T030 [US1] Implement generate_synopsis() method in src/catholic_liturgy_tools/ai/client.py using synopsis prompt template
-- [ ] T031 [US1] Add synopsis generation to generate_readings() in src/catholic_liturgy_tools/generator/readings.py
-- [ ] T032 [US1] Update HTML template in src/catholic_liturgy_tools/generator/readings.py to display synopses in italics above readings
-- [ ] T033 [US1] Add error handling for AI service failures with graceful degradation (display readings without synopses)
-- [ ] T034 [US1] Verify all US1 tests now pass (T025-T029)
+- [X] T030 [US1] Implement generate_synopsis() method in src/catholic_liturgy_tools/ai/client.py using synopsis prompt template
+- [X] T031 [US1] Add synopsis generation to generate_readings() in src/catholic_liturgy_tools/generator/readings.py
+- [X] T032 [US1] Update HTML template in src/catholic_liturgy_tools/generator/readings.py to display synopses in italics above readings
+- [X] T033 [US1] Add error handling for AI service failures with graceful degradation (display readings without synopses)
+- [X] T034 [US1] Verify all US1 tests now pass (T025-T029)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - readings display with synopses
 

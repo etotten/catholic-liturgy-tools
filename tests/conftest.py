@@ -1,9 +1,11 @@
 """Pytest configuration and shared fixtures."""
 
+import json
 import pytest
 import tempfile
 import shutil
 from pathlib import Path
+from unittest.mock import MagicMock
 
 
 @pytest.fixture
@@ -45,3 +47,115 @@ Hello Catholic World
         files.append(filepath)
     
     return files
+
+
+# AI Module Fixtures (Feature 005)
+
+@pytest.fixture
+def mock_anthropic_response():
+    """Mock Anthropic API response for testing."""
+    mock_response = MagicMock()
+    mock_response.content = [MagicMock(text='{"synopsis": "God offers comfort and forgiveness to His people through Christ."}')]
+    mock_response.usage = MagicMock(input_tokens=100, output_tokens=20)
+    return mock_response
+
+
+@pytest.fixture
+def mock_anthropic_client(mocker, mock_anthropic_response):
+    """Mock AnthropicClient for testing without API calls."""
+    from catholic_liturgy_tools.ai.client import AnthropicClient
+    
+    # Mock the underlying Anthropic API client
+    mock_api_client = mocker.patch('catholic_liturgy_tools.ai.client.Anthropic')
+    mock_instance = mock_api_client.return_value
+    mock_instance.messages.create.return_value = mock_anthropic_response
+    
+    # Create real AnthropicClient with mocked API
+    client = AnthropicClient(api_key="test-api-key")
+    return client
+
+
+@pytest.fixture
+def sample_synopsis_response():
+    """Sample synopsis response data for testing."""
+    return {
+        "synopsis": "God offers comfort and forgiveness to His people."
+    }
+
+
+@pytest.fixture
+def sample_reflection_response():
+    """Sample reflection response data for testing."""
+    return {
+        "reflection_text": "<p>Today's readings invite us to consider God's mercy...</p>",
+        "pondering_questions": [
+            "How does God's call challenge me today?",
+            "Where do I need to trust more in God's providence?",
+            "What does it mean to speak tenderly to others?"
+        ],
+        "ccc_citations": [
+            {
+                "paragraph_number": 2558,
+                "excerpt_text": "Prayer is the raising of one's mind and heart to God.",
+                "context_note": "This connects to today's Gospel call to prayer."
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def sample_reading_entry():
+    """Sample reading entry for testing."""
+    return {
+        "title": "First Reading",
+        "citation": "Isaiah 40:1-5",
+        "text": "Comfort, give comfort to my people, says your God."
+    }
+
+
+@pytest.fixture
+def sample_readings_list():
+    """Sample list of readings for testing."""
+    return [
+        {
+            "title": "First Reading",
+            "citation": "Isaiah 40:1-5",
+            "text": "Comfort, give comfort to my people, says your God."
+        },
+        {
+            "title": "Responsorial Psalm",
+            "citation": "Psalm 23:1-3",
+            "text": "The LORD is my shepherd; I shall not want."
+        },
+        {
+            "title": "Gospel",
+            "citation": "Luke 21:5-11",
+            "text": "While some people were speaking about the temple..."
+        }
+    ]
+
+
+@pytest.fixture
+def fixtures_dir():
+    """Get the fixtures directory path."""
+    return Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture
+def sample_prayers_data(fixtures_dir):
+    """Load sample prayers from fixtures."""
+    prayers_file = fixtures_dir / "sample_prayers.json"
+    if prayers_file.exists():
+        with open(prayers_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"version": "1.0.0", "prayers": []}
+
+
+@pytest.fixture
+def sample_readings_data(fixtures_dir):
+    """Load sample readings from fixtures."""
+    readings_file = fixtures_dir / "sample_readings.json"
+    if readings_file.exists():
+        with open(readings_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"readings": []}

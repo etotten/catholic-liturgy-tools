@@ -170,3 +170,117 @@ class TestGenerateReadingsCommand:
         assert "--date" in result.stdout
         assert "--output-dir" in result.stdout
         assert "YYYY-MM-DD" in result.stdout
+
+
+class TestGenerateReadingsWithReflections:
+    """E2E tests for generate-readings command with --with-reflections flag."""
+    
+    def test_generate_readings_with_reflections_flag(self, temp_dir, monkeypatch, mock_anthropic_client):
+        """Test generate-readings command with --with-reflections flag generates AI content."""
+        monkeypatch.chdir(temp_dir)
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "test-api-key")
+        
+        # Mock the AnthropicClient in the generator module
+        with patch("catholic_liturgy_tools.generator.readings.AnthropicClient", return_value=mock_anthropic_client):
+            result = subprocess.run(
+                [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+                 "generate-readings", "--date", "2025-11-22", 
+                 "--output-dir", "readings", "--with-reflections"],
+                capture_output=True,
+                text=True,
+            )
+        
+        assert result.returncode == 0
+        assert "Generating AI-augmented content" in result.stdout
+        assert "Successfully fetched readings" in result.stdout
+        assert "Generated HTML page: readings/2025-11-22.html" in result.stdout
+        
+        # Verify file contains AI-generated content
+        output_file = temp_dir / "readings" / "2025-11-22.html"
+        assert output_file.exists()
+        
+        content = output_file.read_text()
+        assert "<!DOCTYPE html>" in content
+        
+        # Check for synopses (italicized text above readings)
+        assert "<em>" in content or "<i>" in content  # Synopsis formatting
+        
+    def test_generate_readings_with_reflections_includes_synopses(self, temp_dir, monkeypatch, mock_anthropic_client):
+        """Test that --with-reflections flag generates synopses for each reading."""
+        monkeypatch.chdir(temp_dir)
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "test-api-key")
+        
+        with patch("catholic_liturgy_tools.generator.readings.AnthropicClient", return_value=mock_anthropic_client):
+            result = subprocess.run(
+                [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+                 "generate-readings", "--date", "2025-11-22", 
+                 "--output-dir", "readings", "--with-reflections"],
+                capture_output=True,
+                text=True,
+            )
+        
+        assert result.returncode == 0
+        
+        output_file = temp_dir / "readings" / "2025-11-22.html"
+        content = output_file.read_text()
+        
+        # Verify synopses appear in HTML
+        # Synopses should be in italics and appear before each reading
+        assert "synopsis" in content.lower() or "<em>" in content
+        
+    def test_generate_readings_without_api_key_fails_gracefully(self, temp_dir, monkeypatch):
+        """Test that --with-reflections without API key fails gracefully."""
+        monkeypatch.chdir(temp_dir)
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-readings", "--date", "2025-11-22", 
+             "--output-dir", "readings", "--with-reflections"],
+            capture_output=True,
+            text=True,
+        )
+        
+        # Should either fail or fall back to non-reflection mode
+        # Depending on implementation, this could return error code or succeed without AI
+        assert result.returncode in [0, 1]
+        
+        if result.returncode == 0:
+            # Graceful degradation: file created without AI content
+            output_file = temp_dir / "readings" / "2025-11-22.html"
+            assert output_file.exists()
+        else:
+            # Error case: should show helpful message
+            assert "ANTHROPIC_API_KEY" in result.stderr or "API key" in result.stderr
+            
+    def test_generate_readings_help_includes_reflections_flag(self):
+        """Test that help message includes --with-reflections flag."""
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-readings", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "--with-reflections" in result.stdout
+        assert "AI" in result.stdout or "reflection" in result.stdout.lower()
+        
+    def test_generate_readings_with_reflections_cost_tracking(self, temp_dir, monkeypatch, mock_anthropic_client):
+        """Test that --with-reflections tracks and reports API costs."""
+        monkeypatch.chdir(temp_dir)
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "test-api-key")
+        
+        with patch("catholic_liturgy_tools.generator.readings.AnthropicClient", return_value=mock_anthropic_client):
+            result = subprocess.run(
+                [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+                 "generate-readings", "--date", "2025-11-22", 
+                 "--output-dir", "readings", "--with-reflections"],
+                capture_output=True,
+                text=True,
+            )
+        
+        assert result.returncode == 0
+        
+        # Should report cost information
+        assert "cost" in result.stdout.lower() or "$" in result.stdout

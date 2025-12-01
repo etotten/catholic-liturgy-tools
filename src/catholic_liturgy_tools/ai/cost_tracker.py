@@ -27,6 +27,16 @@ class CostTracker:
     INPUT_COST_PER_MILLION = 3.00
     OUTPUT_COST_PER_MILLION = 15.00
 
+    def __post_init__(self):
+        """Validate initialization parameters."""
+        if self.max_cost_usd <= 0:
+            raise ValueError("max_cost must be positive")
+
+    @property
+    def max_cost(self) -> float:
+        """Get maximum cost limit (for compatibility)."""
+        return self.max_cost_usd
+
     def calculate_cost(self, input_tokens: int, output_tokens: int) -> float:
         """Calculate cost in USD for given token counts.
         
@@ -36,38 +46,38 @@ class CostTracker:
             
         Returns:
             Cost in USD
+            
+        Raises:
+            ValueError: If token counts are negative
         """
+        if input_tokens < 0 or output_tokens < 0:
+            raise ValueError("Token counts cannot be negative")
+        
         input_cost = (input_tokens / 1_000_000) * self.INPUT_COST_PER_MILLION
         output_cost = (output_tokens / 1_000_000) * self.OUTPUT_COST_PER_MILLION
         return input_cost + output_cost
 
     def record_call(
         self, operation: str, input_tokens: int, output_tokens: int
-    ) -> float:
-        """Record an API call and return its cost.
+    ) -> None:
+        """Record an API call and check cost limit.
         
         Args:
             operation: Type of operation ("synopsis" or "reflection")
             input_tokens: Number of input tokens used
             output_tokens: Number of output tokens generated
             
-        Returns:
-            Cost of this call in USD
-            
         Raises:
-            ValueError: If recording would exceed max cost
+            RuntimeError: If recording would exceed max cost
         """
         cost = self.calculate_cost(input_tokens, output_tokens)
         
         # Check if adding this would exceed limit
         total_with_new = self.total_cost + cost
         if total_with_new > self.max_cost_usd:
-            raise ValueError(
-                f"API call would exceed cost limit. "
-                f"Current: ${self.total_cost:.4f}, "
-                f"New call: ${cost:.4f}, "
-                f"Total: ${total_with_new:.4f}, "
-                f"Limit: ${self.max_cost_usd:.4f}"
+            raise RuntimeError(
+                f"Cost limit exceeded: ${total_with_new:.4f} > ${self.max_cost_usd:.2f} "
+                f"(current: ${self.total_cost:.4f}, new call: ${cost:.4f})"
             )
         
         call = APICall(
@@ -77,7 +87,6 @@ class CostTracker:
             cost_usd=cost
         )
         self.calls.append(call)
-        return cost
 
     @property
     def total_cost(self) -> float:
@@ -103,10 +112,11 @@ class CostTracker:
         """Get summary of costs and token usage.
         
         Returns:
-            Dictionary with cost summary
+            Dictionary with cost summary including "total_cost" and "calls" keys
         """
         return {
             "total_calls": len(self.calls),
+            "total_cost": self.total_cost,  # For compatibility
             "total_cost_usd": self.total_cost,
             "max_cost_usd": self.max_cost_usd,
             "remaining_budget_usd": self.remaining_budget,
@@ -117,6 +127,7 @@ class CostTracker:
                     "operation": call.operation,
                     "input_tokens": call.input_tokens,
                     "output_tokens": call.output_tokens,
+                    "cost": call.cost_usd,  # For compatibility
                     "cost_usd": call.cost_usd,
                 }
                 for call in self.calls

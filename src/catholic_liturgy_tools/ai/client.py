@@ -64,8 +64,15 @@ class AnthropicClient:
             ReadingSynopsis object
             
         Raises:
-            ValueError: If API cost limit exceeded or response invalid
+            ValueError: If reading_text is empty, citation is invalid/empty, 
+                       API cost limit exceeded, or response invalid
         """
+        # Validate inputs
+        if not reading_text or not reading_text.strip():
+            raise ValueError("reading_text cannot be empty")
+        if not citation or not citation.strip():
+            raise ValueError("citation must be in format 'Book Chapter:Verse-Verse'")
+        
         user_prompt = build_synopsis_user_prompt(reading_title, reading_text, citation)
         
         response = self.client.messages.create(
@@ -102,7 +109,7 @@ class AnthropicClient:
         self,
         date_display: str,
         liturgical_day: str,
-        feast_context: str,
+        feast_context: Optional[str],
         readings: list,
         max_retries: int = 3
     ) -> DailyReflection:
@@ -111,7 +118,7 @@ class AnthropicClient:
         Args:
             date_display: Human-readable date
             liturgical_day: Liturgical context
-            feast_context: Optional feast day info (empty string if none)
+            feast_context: Optional feast day info object or None
             readings: List of reading dicts with 'title', 'citation', 'text'
             max_retries: Maximum retries for invalid CCC citations
             
@@ -121,11 +128,8 @@ class AnthropicClient:
         Raises:
             ValueError: If API cost limit exceeded, retries exhausted, or response invalid
         """
-        from .prompts import format_readings_list
-        
-        readings_list = format_readings_list(readings)
         user_prompt = build_reflection_user_prompt(
-            date_display, liturgical_day, feast_context, readings_list
+            date_display, liturgical_day, feast_context, readings
         )
         
         for attempt in range(max_retries):
