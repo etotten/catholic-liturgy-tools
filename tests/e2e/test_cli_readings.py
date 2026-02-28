@@ -170,3 +170,25 @@ class TestGenerateReadingsCommand:
         assert "--date" in result.stdout
         assert "--output-dir" in result.stdout
         assert "YYYY-MM-DD" in result.stdout
+
+
+class TestGenerateReadingsWithReflections:
+    """E2E tests for generate-readings command with --with-reflections flag.
+    
+    Note: Most E2E testing for AI-generated content requires a real API key
+    and would incur costs. Those tests should be run manually. Unit and
+    integration tests provide comprehensive coverage with mocked API calls.
+    """
+            
+    def test_generate_readings_help_includes_reflections_flag(self):
+        """Test that help message includes --with-reflections flag."""
+        result = subprocess.run(
+            [sys.executable, "-m", "catholic_liturgy_tools.cli", 
+             "generate-readings", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        
+        assert result.returncode == 0
+        assert "--with-reflections" in result.stdout
+        assert "AI" in result.stdout or "reflection" in result.stdout.lower()
