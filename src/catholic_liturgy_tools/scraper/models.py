@@ -7,9 +7,9 @@ complete daily reading collections.
 """
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from .exceptions import ValidationError
 
@@ -67,6 +67,102 @@ class ReadingEntry:
 
 
 @dataclass
+class SourcedPrayer:
+    """
+    Represents a Catholic prayer with source attribution.
+    
+    Attributes:
+        id: Unique prayer identifier
+        title: Prayer title
+        text: Full prayer text
+        source: Source name (e.g., "USCCB", "Vatican")
+        source_url: URL to prayer on source website
+        liturgical_contexts: List of applicable contexts (e.g., ["advent", "weekday"])
+        tags: Optional tags for filtering (e.g., ["traditional", "eucharistic"])
+        language: ISO 639-1 language code (e.g., "en")
+    """
+    
+    id: str
+    title: str
+    text: str
+    source: str
+    source_url: str
+    liturgical_contexts: List[str]
+    tags: List[str] = field(default_factory=list)
+    language: str = "en"
+
+
+@dataclass
+class SaintBiography:
+    """
+    Biographical information for a saint.
+    
+    Attributes:
+        name: Saint's name
+        feast_date: Date of feast day
+        life_span: Years of life (e.g., "1225-1274")
+        patronage: What saint is patron of
+        biography_summary: Brief biography
+        source_url: URL to source
+    """
+    
+    name: str
+    feast_date: str
+    life_span: str
+    patronage: str
+    biography_summary: str
+    source_url: str
+
+
+@dataclass
+class FeastDayInfo:
+    """
+    Information about a feast day or memorial.
+    
+    Attributes:
+        feast_type: Type of feast (e.g., "solemnity", "feast", "memorial")
+        feast_name: Name of the feast
+        liturgical_color: Color for the day (e.g., "red", "white")
+        is_saint: Whether this is a saint's day
+        is_marian: Whether this is a Marian feast
+        is_apostle: Whether saint was an apostle
+        is_martyr: Whether saint was a martyr
+        saint_biography: Optional biographical info
+    """
+    
+    feast_type: str
+    feast_name: str
+    liturgical_color: str
+    is_saint: bool
+    is_marian: bool
+    is_apostle: bool
+    is_martyr: bool
+    saint_biography: Optional[SaintBiography] = None
+
+
+@dataclass
+class ReflectionCostSummary:
+    """
+    Summary of AI API costs for reflection generation.
+    
+    Attributes:
+        total_calls: Number of API calls made
+        total_cost_usd: Total cost in USD
+        total_input_tokens: Total input tokens
+        total_output_tokens: Total output tokens
+        max_cost_usd: Maximum allowed cost
+        remaining_budget_usd: Remaining budget
+    """
+    
+    total_calls: int
+    total_cost_usd: float
+    total_input_tokens: int
+    total_output_tokens: int
+    max_cost_usd: float
+    remaining_budget_usd: float
+
+
+@dataclass
 class DailyReading:
     """
     Represents the complete set of readings for a single day.
@@ -77,6 +173,13 @@ class DailyReading:
         liturgical_day: The liturgical day name (e.g., "Friday of the Thirty-fourth Week in Ordinary Time")
         readings: List of reading entries for this day
         source_url: URL where readings were fetched from
+        synopses: Optional list of AI-generated synopses for each reading
+        reflection: Optional unified daily reflection with questions and CCC citations
+        prayer: Optional prayer for the day with source attribution
+        feast_info: Optional feast day information
+        cost_summary: Optional AI API cost summary
+        generation_timestamp: Optional timestamp when AI content was generated
+        ai_service_status: Status of AI generation ("success", "failed", "skipped", None)
     
     Example:
         >>> from datetime import date
@@ -97,6 +200,15 @@ class DailyReading:
     liturgical_day: str
     readings: List[ReadingEntry] = field(default_factory=list)
     source_url: str = ""
+    
+    # New optional attributes for AI-augmented content (feature 005)
+    synopses: Optional[List[dict]] = None
+    reflection: Optional[dict] = None
+    prayer: Optional[SourcedPrayer] = None
+    feast_info: Optional[FeastDayInfo] = None
+    cost_summary: Optional[ReflectionCostSummary] = None
+    generation_timestamp: Optional[datetime] = None
+    ai_service_status: Optional[str] = None
     
     def validate(self) -> None:
         """
