@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-30",
+  "sources": [
+    {
+      "name": "USCCB",
+      "base_url": "https://www.usccb.org"
+    }
+  ],
+  "prayers": [
+    {
+      "id": "test-prayer-advent",
+      "title": "Test Advent Prayer",
+      "text": "Lord, help us prepare our hearts for Your coming. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/test",
+      "liturgical_contexts": ["advent", "weekday"],
+      "tags": ["seasonal", "preparation"],
+      "language": "en"
+    },
+    {
+      "id": "test-prayer-universal",
+      "title": "Test Universal Prayer",
+      "text": "Heavenly Father, guide us in Your ways. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/test-universal",
+      "liturgical_contexts": ["all"],
+      "tags": ["general"],
+      "language": "en"
+    },
+    {
+      "id": "test-prayer-saint",
+      "title": "Test Saint Prayer",
+      "text": "St. Francis, pray for us that we may be instruments of peace. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/test-saint",
+      "liturgical_contexts": ["saint", "all"],
+      "tags": ["saint", "intercession"],
+      "language": "en"
+    },
+    {
+      "id": "test-prayer-easter",
+      "title": "Test Easter Prayer",
+      "text": "Alleluia! Christ is risen, bringing light to the world. Amen.",
+      "source": "USCCB",
+      "source_url": "https://www.usccb.org/prayers/test-easter",
+      "liturgical_contexts": ["easter", "sunday"],
+      "tags": ["seasonal", "resurrection"],
+      "language": "en"
+    }
+  ]
+}
