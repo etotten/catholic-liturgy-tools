@@ -3,6 +3,15 @@ agent: speckit.specify
 ---
 ### New Prompt
 
+- Improve the value of the site by converting the daily readings feature into a daily reflection feature; this is where the true value of this site starts to come into being; the copying of the readings from usccb.org was just a milestone on the way to this reflections feature
+- Use the Anthropic LLM API to augment the readings, thus turning into a daily reflection with the following additions:
+	- for each reading, add a one-line synopsis presented in italics, generated from the Anthropic LLM API, just above the reading text
+	- add a single reflection section after all the readings all the readings for the day; this generation should use all the readings as context as well as teaching from the Catholic Church, including questions for pondering, one or two relevant entries from the Catechism of the Catholic Church (CCC).
+	- add a relevant prayer to the top of the daily readings; the prayer should be found from some Catholic source (I would rather not have AI-generated prayers) and the source should be attributed with a link to the source's site; if it is a solemnity or other feast day, the prayer focus should follow that feast day, otherwise the prayer can focus on the Gospel reading.
+	- If it is a feast day, provide a brief synopsis of the feast; if the feast happens to be for a saint, provide a brief bio of the saint including time of birth, death, significant geographic locations, what the person did to become a saint, and a link to some Catholic site which gives more info about that saint.
+
+### Initial Prompt for spec 004-preserve-site-history [DONE - kept for historical reference only]
+
 - We introduced an issue with the site restructure:
 	- the index page for the site now only shows the latest reading and message; history of past generation and publishing is lost (at least to the index page, but I'm concerned it may be lost from the site completely)
 	- this is probably due to no longer preserving the old generated content in the repo

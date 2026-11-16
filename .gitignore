@@ -147,6 +147,10 @@ cython_debug/
 *~
 .DS_Store
 
+# Node.js dependencies
+node_modules/
+package-lock.json
+
 ## Project-specific
 #_posts/
 #index.md
